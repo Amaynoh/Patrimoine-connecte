@@ -21,6 +21,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'city',
+        'specialty',
+        'bio',
+        'phone',
     ];
 
     /**
@@ -42,4 +47,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Get the opportunites for the user.
+     */
+    public function opportunites()
+    {
+        return $this->hasMany(Opportunite::class);
+    }
 }

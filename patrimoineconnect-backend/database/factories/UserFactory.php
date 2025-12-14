@@ -23,11 +23,23 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $roles = ['laureat', 'artisan', 'architecte', 'restaurateur', 'entreprise'];
+        $cities = ['Rabat', 'Casablanca', 'Fès', 'Marrakech', 'Tanger', 'Meknès', 'Essaouira'];
+        $specialties = [
+            'Zellige', 'Bois sculpté', 'Plâtre ciselé', 'Fer forgé', 
+            'Restauration architecturale', 'Patrimoine historique', 'Architecture traditionnelle'
+        ];
+
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'role' => fake()->randomElement($roles),
+            'city' => fake()->randomElement($cities),
+            'specialty' => fake()->randomElement($specialties),
+            'bio' => fake()->sentence(15),
+            'phone' => '06' . fake()->numerify('########'),
             'remember_token' => Str::random(10),
         ];
     }

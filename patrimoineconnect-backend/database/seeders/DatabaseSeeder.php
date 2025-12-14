@@ -12,11 +12,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        // Créer 15 utilisateurs avec différents rôles
+        \App\Models\User::factory(15)->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        // Récupérer les architectes et entreprises pour créer des opportunités
+        $architectesEtEntreprises = \App\Models\User::whereIn('role', ['architecte', 'entreprise'])->get();
+
+        // Créer 10 opportunités
+        if ($architectesEtEntreprises->count() > 0) {
+            foreach (range(1, 10) as $index) {
+                \App\Models\Opportunite::factory()->create([
+                    'user_id' => $architectesEtEntreprises->random()->id,
+                ]);
+            }
+        }
     }
 }
