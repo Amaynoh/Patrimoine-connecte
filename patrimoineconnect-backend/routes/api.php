@@ -36,6 +36,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
     // Opportunités (création, modification, suppression)
     Route::post('/opportunites', [OpportuniteController::class, 'store']);
-    Route::put('/opportunites/{id}', [OpportuniteController::class, 'update']);
-    Route::delete('/opportunites/{id}', [OpportuniteController::class, 'destroy']);
+    Route::put('/opportunites/{opportunite}', [OpportuniteController::class, 'update']);
+    Route::delete('/opportunites/{opportunite}', [OpportuniteController::class, 'destroy']);
 });

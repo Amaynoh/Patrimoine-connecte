@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\UserSearchRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -11,7 +12,7 @@ class UserController extends Controller
     /**
      * Afficher l'annuaire des professionnels avec filtres
      */
-    public function index(Request $request)
+    public function index(UserSearchRequest $request)
     {
         $query = User::query();
 

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Opportunite\OpportuniteSearchRequest;
+use App\Http\Requests\Opportunite\StoreOpportuniteRequest;
+use App\Http\Requests\Opportunite\UpdateOpportuniteRequest;
 use App\Models\Opportunite;
 use Illuminate\Http\Request;
 
@@ -11,7 +14,7 @@ class OpportuniteController extends Controller
     /**
      * Afficher toutes les opportunités avec filtres
      */
-    public function index(Request $request)
+    public function index(OpportuniteSearchRequest $request)
     {
         $query = Opportunite::with('user:id,name,role');
 
@@ -33,21 +36,8 @@ class OpportuniteController extends Controller
     /**
      * Créer une nouvelle opportunité
      */
-    public function store(Request $request)
+    public function store(StoreOpportuniteRequest $request)
     {
-        // Vérifier que l'utilisateur est architecte ou entreprise
-        if (!in_array($request->user()->role, ['architecte', 'entreprise'])) {
-            return response()->json([
-                'message' => 'Seuls les architectes et entreprises peuvent créer des opportunités'
-            ], 403);
-        }
-
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'type' => 'required|in:emploi,projet,collaboration',
-            'location' => 'required|string|max:255',
-        ]);
 
         $opportunite = $request->user()->opportunites()->create([
             'title' => $request->title,
@@ -77,23 +67,8 @@ class OpportuniteController extends Controller
     /**
      * Modifier une opportunité
      */
-    public function update(Request $request, $id)
+    public function update(UpdateOpportuniteRequest $request, Opportunite $opportunite)
     {
-        $opportunite = Opportunite::findOrFail($id);
-
-        // Vérifier que l'utilisateur est le propriétaire
-        if ($opportunite->user_id !== $request->user()->id) {
-            return response()->json([
-                'message' => 'Vous n\'êtes pas autorisé à modifier cette opportunité'
-            ], 403);
-        }
-
-        $request->validate([
-            'title' => 'sometimes|string|max:255',
-            'description' => 'sometimes|string',
-            'type' => 'sometimes|in:emploi,projet,collaboration',
-            'location' => 'sometimes|string|max:255',
-        ]);
 
         $opportunite->update($request->only(['title', 'description', 'type', 'location']));
 
@@ -108,12 +83,10 @@ class OpportuniteController extends Controller
     /**
      * Supprimer une opportunité
      */
-    public function destroy(Request $request, $id)
+    public function destroy(Opportunite $opportunite)
     {
-        $opportunite = Opportunite::findOrFail($id);
-
         // Vérifier que l'utilisateur est le propriétaire
-        if ($opportunite->user_id !== $request->user()->id) {
+        if ($opportunite->user_id !== request()->user()->id) {
             return response()->json([
                 'message' => 'Vous n\'êtes pas autorisé à supprimer cette opportunité'
             ], 403);
