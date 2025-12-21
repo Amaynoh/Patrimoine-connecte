@@ -1,24 +1,16 @@
-// Composant SectionHero - Bannière principale de la page d'accueil
 import { Link } from "react-router-dom";
 import heroImage from "../../assets/hero.png";
 
-const SectionHero = () => {
+const HeroSection = () => {
     return (
         <section className="relative w-full h-[80vh] min-h-[500px] overflow-hidden">
-            {/* Image de fond */}
             <div
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                 style={{ backgroundImage: `url(${heroImage})` }}
             >
-                {/* Overlay sombre */}
                 <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
             </div>
-
-            {/* Contenu centré */}
             <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4">
-                <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                    Page d'Accueil
-                </h1>
                 <p className="text-lg md:text-xl text-gray-200 max-w-2xl mb-8">
                     Découvrez le patrimoine marocain à travers notre plateforme dédiée aux professionnels
                     de l'architecture et de l'artisanat traditionnel.
@@ -42,4 +34,4 @@ const SectionHero = () => {
     );
 };
 
-export default SectionHero;
+export default HeroSection;

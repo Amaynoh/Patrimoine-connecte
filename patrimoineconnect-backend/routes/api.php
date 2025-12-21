@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\OpportuniteController;
+use App\Http\Controllers\Api\HomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,6 +16,10 @@ use Illuminate\Support\Facades\Route;
 // Routes publiques
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+// Données page Home (publiques)
+Route::get('/projets', [HomeController::class, 'projets']);
+Route::get('/etapes', [HomeController::class, 'etapes']);
 
 // Annuaire public
 Route::get('/users', [UserController::class, 'index']);
