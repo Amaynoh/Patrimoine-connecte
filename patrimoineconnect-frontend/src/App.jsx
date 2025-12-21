@@ -1,9 +1,10 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
+import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
@@ -17,12 +18,12 @@ function App() {
         {/* Navbar visible partout */}
         <Navbar />
 
-        {/* Wrapper pour compenser le Navbar et le Footer fixes */}
-        <div className="w-full pt-[70px] pb-[70px] min-h-screen flex flex-col justify-center bg-gray-50">
+        {/* Wrapper pour compenser le Navbar fixe */}
+        <div className="w-full pt-[70px] min-h-screen flex flex-col bg-gray-50">
           <Routes>
+            <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/" element={<Navigate to="/login" />} />
           </Routes>
         </div>
 

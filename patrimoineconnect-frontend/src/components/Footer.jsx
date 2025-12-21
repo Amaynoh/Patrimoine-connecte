@@ -3,14 +3,14 @@ import logo from "../assets/logo.png";
 
 const Footer = () => {
     return (
-        <footer className="w-full bg-[#0f172a] text-gray-400 z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] text-xs">
-            <div className="w-full py-2">
-                {/* Content full width */}
-                <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
+        <footer className="w-full bg-[#0f172a] text-gray-400 z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
+            <div className="w-full py-8 px-6 md:px-12 lg:px-16">
+                {/* Content with max-width and centered */}
+                <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 items-start">
 
                     {/* LOGO */}
-                    <div className="space-y-4">
-                        <div className="flex items-center space-x-3">
+                    <div className="space-y-4 text-center md:text-left">
+                        <div className="flex items-center justify-center md:justify-start space-x-3">
                             <img
                                 src={logo}
                                 alt="Logo"
@@ -20,18 +20,18 @@ const Footer = () => {
                                 PatrimoineConnect
                             </span>
                         </div>
-                        <p className="text-sm leading-relaxed max-w-md text-gray-300">
+                        <p className="text-sm leading-relaxed text-gray-300 max-w-xs mx-auto md:mx-0">
                             La plateforme de référence pour les professionnels de
                             l'architecture et de l'artisanat traditionnel marocain.
                         </p>
                     </div>
 
                     {/* LIENS */}
-                    <div>
+                    <div className="text-center">
                         <h4 className="text-white font-bold text-sm uppercase tracking-wider mb-4">
                             Liens utiles
                         </h4>
-                        <ul className="space-y-2 text-sm">
+                        <ul className="space-y-3 text-sm">
                             <li><Link to="#" className="hover:text-white transition">À propos</Link></li>
                             <li><Link to="#" className="hover:text-white transition">Contact</Link></li>
                             <li><Link to="#" className="hover:text-white transition">Conditions d'utilisation</Link></li>
@@ -40,7 +40,7 @@ const Footer = () => {
                     </div>
 
                     {/* RÉSEAUX SOCIAUX */}
-                    <div className="flex flex-col items-center md:items-start">
+                    <div className="flex flex-col items-center md:items-end">
                         <h4 className="text-white font-bold text-sm uppercase tracking-wider mb-4">
                             Suivez-nous
                         </h4>
@@ -71,7 +71,7 @@ const Footer = () => {
                 </div>
 
                 {/* COPYRIGHT */}
-                <div className="border-t border-gray-800 pt-4 text-center text-xs text-gray-500 mt-6">
+                <div className="max-w-6xl mx-auto border-t border-gray-800 pt-6 text-center text-sm text-gray-500 mt-8">
                     © {new Date().getFullYear()} PatrimoineConnect. Tous droits réservés.
                 </div>
             </div>
