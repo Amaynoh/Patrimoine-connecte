@@ -1,15 +1,31 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../features/auth/authSlice";
 import logo from "../assets/logo.png";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const { isAuthenticated, user } = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        // Nettoyage localStorage
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+
+        // Dispatch Redux
+        dispatch(logout());
+
+        // Redirection
+        navigate('/login');
+        setIsOpen(false);
+    };
 
     return (
         <nav className="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-md z-50 border-b border-gray-100/50">
             <div className="w-full flex items-center justify-between px-4 py-3">
-
-                {/* Logo */}
                 <Link
                     to="/"
                     className="flex items-center space-x-3 group"
@@ -30,19 +46,48 @@ const Navbar = () => {
 
                 {/* Desktop menu */}
                 <div className="hidden md:flex items-center space-x-8">
-                    <Link
-                        to="/login"
-                        className="text-gray-600 hover:text-[#78350f] text-sm font-semibold transition-colors"
-                    >
-                        Se connecter
+                    <Link to="/opportunites" className="text-gray-700 hover:text-[#D4A373] transition-colors font-medium">
+                        Opportunités
                     </Link>
 
-                    <Link
-                        to="/register"
-                        className="bg-[#78350f] text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-amber-900/20 hover:bg-[#632c0c] hover:shadow-amber-900/40 transition-all duration-300 transform hover:-translate-y-0.5"
-                    >
-                        S'inscrire
-                    </Link>
+                    {isAuthenticated ? (
+                        <>
+                            <Link
+                                to="/profile"
+                                className="text-sm font-semibold text-gray-600 hover:text-[#78350f] transition-colors"
+                            >
+                                👤 {user?.name || "Mon Profil"}
+                            </Link>
+                            <button
+                                onClick={handleLogout}
+                                className="bg-gray-100 text-gray-700 px-4 py-2 rounded-xl text-sm font-bold hover:bg-gray-200 transition-colors"
+                            >
+                                Se déconnecter
+                            </button>
+                            <Link
+                                to="/opportunites/create"
+                                className="bg-[#78350f] text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-amber-900/20 hover:bg-[#632c0c] transition-all"
+                            >
+                                + Créer
+                            </Link>
+                        </>
+                    ) : (
+                        <>
+                            <Link
+                                to="/login"
+                                className="text-gray-600 hover:text-[#78350f] text-sm font-semibold transition-colors"
+                            >
+                                Se connecter
+                            </Link>
+
+                            <Link
+                                to="/register"
+                                className="bg-[#78350f] text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-amber-900/20 hover:bg-[#632c0c] hover:shadow-amber-900/40 transition-all duration-300 transform hover:-translate-y-0.5"
+                            >
+                                S'inscrire
+                            </Link>
+                        </>
+                    )}
                 </div>
 
                 {/* Mobile hamburger */}
@@ -65,25 +110,52 @@ const Navbar = () => {
 
             {/* Mobile menu */}
             <div
-                className={`md:hidden overflow-hidden transition-all duration-300 ${isOpen ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
+                className={`md:hidden overflow-hidden transition-all duration-300 ${isOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
                     }`}
             >
-                <div className="px-6 pb-6 pt-2 space-y-4 bg-white">
+                <div className="px-6 pb-6 pt-2 space-y-4 bg-white shadow-xl">
                     <Link
-                        to="/login"
+                        to="/opportunites"
                         onClick={() => setIsOpen(false)}
                         className="block text-gray-700 font-semibold"
                     >
-                        Se connecter
+                        Opportunités
                     </Link>
 
-                    <Link
-                        to="/register"
-                        onClick={() => setIsOpen(false)}
-                        className="block text-center bg-[#78350f] text-white py-3 rounded-xl font-bold shadow-lg"
-                    >
-                        S'inscrire
-                    </Link>
+                    {isAuthenticated ? (
+                        <>
+                            <Link
+                                to="/opportunites/create"
+                                onClick={() => setIsOpen(false)}
+                                className="block text-[#78350f] font-bold"
+                            >
+                                + Créer une opportunité
+                            </Link>
+                            <button
+                                onClick={handleLogout}
+                                className="block w-full text-left text-red-600 font-semibold mt-4"
+                            >
+                                Se déconnecter
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <Link
+                                to="/login"
+                                onClick={() => setIsOpen(false)}
+                                className="block text-gray-700 font-semibold"
+                            >
+                                Se connecter
+                            </Link>
+                            <Link
+                                to="/register"
+                                onClick={() => setIsOpen(false)}
+                                className="block text-center bg-[#78350f] text-white py-3 rounded-xl font-bold shadow-lg"
+                            >
+                                S'inscrire
+                            </Link>
+                        </>
+                    )}
                 </div>
             </div>
         </nav>

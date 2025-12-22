@@ -17,12 +17,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            ProjetSeeder::class,
-            EtapeSeeder::class,
+        // Créer un utilisateur pour rattacher les opportunités
+        \App\Models\User::factory()->create([
+            'name' => 'Admin User',
+            'email' => 'admin@patrimoine.ma',
+            'role' => 'architecte',
         ]);
 
-        \App\Models\User::factory(15)->create();
+        $this->call([
+            EtapeSeeder::class,
+            ProjetSeeder::class,
+            OpportuniteSeeder::class,
+        ]);
+        
+        // Autres utilisateurs
+        \App\Models\User::factory(10)->create();
 
         $architectesEtEntreprises = \App\Models\User::whereIn('role', ['architecte', 'entreprise'])->get();
         if ($architectesEtEntreprises->count() > 0) {

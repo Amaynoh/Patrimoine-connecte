@@ -3,24 +3,23 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Opportunite\OpportuniteSearchRequest;
+use Illuminate\Http\Request;
+use App\Models\Opportunite;
 use App\Http\Requests\Opportunite\StoreOpportuniteRequest;
 use App\Http\Requests\Opportunite\UpdateOpportuniteRequest;
-use App\Models\Opportunite;
-use Illuminate\Http\Request;
 
 class OpportuniteController extends Controller
 {
     /**
      * Afficher toutes les opportunités avec filtres
      */
-    public function index(OpportuniteSearchRequest $request)
+    public function index(Request $request)
     {
         $query = Opportunite::with('user:id,name,role');
 
-        // Filtre par type
-        if ($request->has('type')) {
-            $query->where('type', $request->type);
+        // Filtre par contract_type
+        if ($request->has('contract_type')) {
+            $query->where('contract_type', $request->contract_type);
         }
 
         // Filtre par lieu
@@ -44,6 +43,10 @@ class OpportuniteController extends Controller
             'description' => $request->description,
             'type' => $request->type,
             'location' => $request->location,
+            'missions' => $request->missions,
+            'competences' => $request->competences,
+            'budget' => $request->budget,
+            'deadline' => $request->deadline,
         ]);
 
         $opportunite->load('user:id,name,role');
@@ -70,7 +73,7 @@ class OpportuniteController extends Controller
     public function update(UpdateOpportuniteRequest $request, Opportunite $opportunite)
     {
 
-        $opportunite->update($request->only(['title', 'description', 'type', 'location']));
+        $opportunite->update($request->only(['title', 'description', 'type', 'location', 'missions', 'competences', 'budget', 'deadline']));
 
         $opportunite->load('user:id,name,role');
 

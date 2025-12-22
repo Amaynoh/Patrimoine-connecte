@@ -15,9 +15,27 @@ class Opportunite extends Model
     protected $fillable = [
         'user_id',
         'title',
+        'organization',
+        'image',
         'description',
-        'type',
+        'contract_type',
         'location',
+        'status',
+        'missions',
+        'competences',
+        'deadline',
+        'budget',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'missions' => 'array',
+        'competences' => 'array',
+        'deadline' => 'date',
     ];
 
     /**

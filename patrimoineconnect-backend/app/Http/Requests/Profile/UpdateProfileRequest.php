@@ -26,6 +26,7 @@ class UpdateProfileRequest extends FormRequest
             'specialty' => 'nullable|string|max:255',
             'bio' => 'nullable|string',
             'phone' => 'nullable|string|max:20',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
         ];
     }
 

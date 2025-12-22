@@ -16,8 +16,9 @@ class OpportuniteFactory extends Factory
      */
     public function definition(): array
     {
-        $types = ['emploi', 'projet', 'collaboration'];
+        $contractTypes = ['CDI', 'Stage', 'Stage (PFE)', 'Bénévolat'];
         $locations = ['Rabat', 'Casablanca', 'Fès', 'Marrakech', 'Tanger', 'Meknès', 'Essaouira'];
+        $organizations = ['Maroc Telecom', 'Inwi', 'Agence Urbaine', 'Arch Group', 'Patrimoine Maroc'];
         
         $titles = [
             'Restauration de Riad historique',
@@ -32,9 +33,15 @@ class OpportuniteFactory extends Factory
 
         return [
             'title' => fake()->randomElement($titles),
+            'organization' => fake()->randomElement($organizations),
             'description' => fake()->paragraph(3),
-            'type' => fake()->randomElement($types),
+            'contract_type' => fake()->randomElement($contractTypes),
             'location' => fake()->randomElement($locations),
+            'status' => 'Active',
+            'missions' => null,
+            'competences' => null,
+            'deadline' => fake()->optional()->dateTimeBetween('now', '+1 year'),
+            'budget' => fake()->optional()->randomElement(['10 000 MAD', '50 000 MAD', '100 000 MAD', 'Non défini']),
         ];
     }
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useNavigate, Link } from 'react-router-dom';
+import api from '../api/axios';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -12,8 +12,8 @@ const Register = () => {
     });
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    const { register } = useAuth();
     const navigate = useNavigate();
 
     const roles = [
@@ -31,18 +31,22 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setLoading(true);
 
         if (formData.password !== formData.password_confirmation) {
             setError('Les mots de passe ne correspondent pas');
+            setLoading(false);
             return;
         }
 
         try {
-            await register(formData);
+            await api.post('/register', formData);
             navigate('/login', { state: { message: 'Inscription réussie ! Veuillez vous connecter.' } });
         } catch (err) {
             const message = err?.response?.data?.message || err?.message || "Erreur lors de l'inscription";
             setError(message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -145,11 +149,18 @@ const Register = () => {
 
                         <button
                             type="submit"
-                            className="w-full bg-[#8B5A2B] hover:bg-[#724C25] text-white font-bold py-2.5 rounded shadow-sm transition-all duration-300 transform active:scale-[0.98] mt-2 text-sm"
+                            disabled={loading}
+                            className={`w-full bg-[#8B5A2B] hover:bg-[#724C25] text-white font-bold py-2.5 rounded shadow-sm transition-all duration-300 transform active:scale-[0.98] mt-2 text-sm ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
                         >
-                            S'inscrire
+                            {loading ? 'Inscription...' : "S'inscrire"}
                         </button>
                     </form>
+
+                    <div className="text-center mt-4">
+                        <p className="text-xs text-gray-500">
+                            Déjà inscris ? <Link to="/login" className="text-[#8B5A2B] font-bold hover:underline">Se connecter</Link>
+                        </p>
+                    </div>
                 </div>
             </main>
         </div>

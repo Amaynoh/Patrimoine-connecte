@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../features/auth/authSlice";
+import api from "../api/axios";
 import logo from "../assets/logo.png";
 
 const LoginPage = () => {
@@ -8,8 +10,9 @@ const LoginPage = () => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    const { login } = useAuth();
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
     const successMessage = location.state?.message;
@@ -17,15 +20,30 @@ const LoginPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
+        setLoading(true);
 
         try {
-            await login(email, password);
-            navigate("/dashboard");
+            const response = await api.post('/login', { email, password });
+
+            // Stockage dans localStorage
+            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('user', JSON.stringify(response.data.user));
+
+            // Mise à jour du store Redux
+            dispatch(loginSuccess({
+                user: response.data.user,
+                token: response.data.token
+            }));
+
+            navigate("/opportunites");
         } catch (err) {
             setError(err.response?.data?.message || "Identifiants incorrects");
+        } finally {
+            setLoading(false);
         }
     };
 
+    // ... reste du rendu identique ...
     return (
         <div className="w-full flex-grow flex justify-center items-center px-0 py-4">
             <div className="w-full max-w-[450px] bg-white rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.08)] p-6 border border-gray-100">
@@ -88,9 +106,10 @@ const LoginPage = () => {
 
                     <button
                         type="submit"
-                        className="w-full bg-[#8B5A2B] text-white font-bold py-2.5 rounded shadow-sm text-sm hover:bg-[#724C25] transition"
+                        disabled={loading}
+                        className={`w-full bg-[#8B5A2B] text-white font-bold py-2.5 rounded shadow-sm text-sm hover:bg-[#724C25] transition ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
                     >
-                        Se connecter
+                        {loading ? 'Connexion en cours...' : 'Se connecter'}
                     </button>
                 </form>
             </div>

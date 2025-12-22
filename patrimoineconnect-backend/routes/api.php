@@ -1,17 +1,27 @@
 <?php
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\OpportuniteController;
 use App\Http\Controllers\Api\HomeController;
-use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "api" middleware group. Make something great!
+|
 */
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
 
 // Routes publiques
 Route::post('/register', [AuthController::class, 'register']);
@@ -20,14 +30,15 @@ Route::post('/login', [AuthController::class, 'login']);
 // Données page Home (publiques)
 Route::get('/projets', [HomeController::class, 'projets']);
 Route::get('/etapes', [HomeController::class, 'etapes']);
-
-// Annuaire public
-Route::get('/users', [UserController::class, 'index']);
-Route::get('/users/{id}', [UserController::class, 'show']);
+// Route::get('/temoignages', [TemoignageController::class, 'index']); // Controller non existant
 
 // Opportunités publiques
 Route::get('/opportunites', [OpportuniteController::class, 'index']);
 Route::get('/opportunites/{id}', [OpportuniteController::class, 'show']);
+
+// Annuaire public
+Route::get('/users', [UserController::class, 'index']);
+Route::get('/users/{id}', [UserController::class, 'show']);
 
 // Routes protégées (nécessitent authentification)
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -38,6 +49,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Profil
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile', [ProfileController::class, 'update']);
+    Route::post('/profile/photo', [ProfileController::class, 'uploadPhoto']);
     
     // Opportunités (création, modification, suppression)
     Route::post('/opportunites', [OpportuniteController::class, 'store']);

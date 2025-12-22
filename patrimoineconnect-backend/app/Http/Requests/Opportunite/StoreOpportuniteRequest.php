@@ -25,6 +25,10 @@ class StoreOpportuniteRequest extends FormRequest
             'description' => 'required|string',
             'type' => 'required|in:emploi,projet,collaboration',
             'location' => 'required|string|max:255',
+            'missions' => 'nullable|array',
+            'competences' => 'nullable|array',
+            'budget' => 'nullable|string|max:255',
+            'deadline' => 'nullable|date',
         ];
     }
 
