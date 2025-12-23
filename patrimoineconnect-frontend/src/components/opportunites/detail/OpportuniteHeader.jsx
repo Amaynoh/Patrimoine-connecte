@@ -1,11 +1,10 @@
 import React from 'react';
 
 const OpportuniteHeader = ({ opp }) => {
-    // Badges statiques pour mockup si pas de skills dans la DB
     const badges = ['Architecture', 'Patrimoine', 'Restauration'];
 
     return (
-        <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 mb-6">
+        <div className="bg-white rounded-xl p-4 md:p-8 shadow-sm border border-gray-100 mb-6">
             <div className="flex justify-between items-start">
                 <div className="flex gap-3 mb-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${opp.contract_type === 'CDI' ? 'bg-blue-100 text-blue-700' :

@@ -10,15 +10,17 @@ const Navbar = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    // Rôles autorisés à créer des opportunités
+    const allowedRoles = ['architecte', 'entreprise', 'admin'];
+
+    // Vérifier si l'utilisateur peut créer (check role et user_type pour compatibilité)
+    const userRole = user?.role || user?.user_type || '';
+    const canCreate = allowedRoles.includes(userRole);
+
     const handleLogout = () => {
-        // Nettoyage localStorage
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-
-        // Dispatch Redux
         dispatch(logout());
-
-        // Redirection
         navigate('/login');
         setIsOpen(false);
     };
@@ -28,14 +30,14 @@ const Navbar = () => {
             <div className="w-full flex items-center justify-between px-4 py-3">
                 <Link
                     to="/"
-                    className="flex items-center space-x-3 group"
+                    className="flex items-center space-x-2 sm:space-x-3 group"
                     onClick={() => setIsOpen(false)}
                 >
                     <div className="relative">
                         <img
                             src={logo}
                             alt="Logo"
-                            className="h-10 w-auto transition-transform duration-300 group-hover:scale-110"
+                            className="h-8 sm:h-10 w-auto transition-transform duration-300 group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-amber-900/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
@@ -45,8 +47,8 @@ const Navbar = () => {
                 </Link>
 
                 {/* Desktop menu */}
-                <div className="hidden md:flex items-center space-x-8">
-                    <Link to="/opportunites" className="text-gray-700 hover:text-[#D4A373] transition-colors font-medium">
+                <div className="hidden md:flex items-center space-x-4 lg:space-x-8">
+                    <Link to="/opportunites" className="text-gray-700 hover:text-[#D4A373] transition-colors font-medium text-sm lg:text-base">
                         Opportunités
                     </Link>
 
@@ -64,12 +66,15 @@ const Navbar = () => {
                             >
                                 Se déconnecter
                             </button>
-                            <Link
-                                to="/opportunites/create"
-                                className="bg-[#78350f] text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-amber-900/20 hover:bg-[#632c0c] transition-all"
-                            >
-                                + Créer
-                            </Link>
+                            {/* Bouton Créer visible uniquement pour les rôles autorisés */}
+                            {canCreate && (
+                                <Link
+                                    to="/opportunites/create"
+                                    className="bg-[#78350f] text-white px-4 lg:px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-amber-900/20 hover:bg-[#632c0c] transition-all"
+                                >
+                                    + Créer
+                                </Link>
+                            )}
                         </>
                     ) : (
                         <>
@@ -125,12 +130,22 @@ const Navbar = () => {
                     {isAuthenticated ? (
                         <>
                             <Link
-                                to="/opportunites/create"
+                                to="/profile"
                                 onClick={() => setIsOpen(false)}
-                                className="block text-[#78350f] font-bold"
+                                className="block text-gray-700 font-semibold"
                             >
-                                + Créer une opportunité
+                                👤 Mon Profil
                             </Link>
+                            {/* Créer visible uniquement pour architecte, entreprise et admin */}
+                            {canCreate && (
+                                <Link
+                                    to="/opportunites/create"
+                                    onClick={() => setIsOpen(false)}
+                                    className="block text-[#78350f] font-bold"
+                                >
+                                    + Créer une opportunité
+                                </Link>
+                            )}
                             <button
                                 onClick={handleLogout}
                                 className="block w-full text-left text-red-600 font-semibold mt-4"
@@ -163,4 +178,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

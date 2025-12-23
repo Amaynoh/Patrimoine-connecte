@@ -45,7 +45,7 @@ const LoginPage = () => {
 
     // ... reste du rendu identique ...
     return (
-        <div className="w-full flex-grow flex justify-center items-center px-0 py-4">
+        <div className="w-full flex-grow flex justify-center items-center px-4 py-4">
             <div className="w-full max-w-[450px] bg-white rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.08)] p-6 border border-gray-100">
 
                 {/* Header */}

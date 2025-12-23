@@ -2,7 +2,7 @@ import React from 'react';
 
 const OpportuniteFilter = ({ contractType, setContractType, location, setLocation }) => {
     return (
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 sticky top-24">
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 lg:sticky lg:top-24">
             <h2 className="text-lg font-semibold text-gray-800 mb-6">Filtres de recherche</h2>
 
             {/* Recherche par mot clé (visuel) */}

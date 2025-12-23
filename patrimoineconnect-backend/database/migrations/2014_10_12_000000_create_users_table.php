@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('specialty')->nullable();
             $table->text('bio')->nullable();
             $table->string('phone')->nullable();
+            $table->string('photo')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

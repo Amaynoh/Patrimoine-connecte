@@ -6,7 +6,7 @@ const CreateOpportunite = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         title: '',
-        type: 'emploi', 
+        type: 'emploi',
         location: '',
         description: '',
         organization: '',
@@ -31,9 +31,6 @@ const CreateOpportunite = () => {
         setError(null);
 
         try {
-            // Note: user_id est géré par le backend via auth:sanctum
-
-            // Conversion des champs texte en tableau pour le backend
             const missionsArray = formData.missions ? formData.missions.split('\n').filter(item => item.trim() !== '') : [];
             const competencesArray = formData.competences ? formData.competences.split('\n').filter(item => item.trim() !== '') : [];
 
@@ -81,7 +78,7 @@ const CreateOpportunite = () => {
                     <p className="text-gray-500 mt-2">Créez une annonce pour partager vos projets et opportunités avec la communauté PatrimoineConnect</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 space-y-8">
+                <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-8 space-y-8">
 
                     {/* Titre */}
                     <div>

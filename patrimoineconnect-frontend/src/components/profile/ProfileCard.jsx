@@ -51,7 +51,26 @@ const ProfileCard = ({ user, onPhotoUpdate }) => {
             }
         } catch (err) {
             console.error('Erreur upload photo:', err);
-            alert('Erreur lors de l\'upload de la photo');
+
+            // Gestion améliorée des erreurs
+            if (err.response?.status === 422) {
+                // Erreur de validation (ex: fichier trop lourd, mauvais format)
+                const errors = err.response.data.errors;
+                const errorMessage = errors && errors.photo
+                    ? errors.photo[0]
+                    : 'Erreur de validation lors de l\'upload.';
+                alert(errorMessage);
+            } else if (err.response?.status === 413) {
+                // Payload Too Large (souvent configuration serveur Nginx/Apache)
+                alert('Le fichier est trop volumineux pour le serveur.');
+            } else {
+                console.log('Full Error Object:', err);
+                if (err.response) {
+                    console.log('Status:', err.response.status);
+                    console.log('Data:', err.response.data);
+                }
+                alert('Erreur lors de l\'upload de la photo. Veuillez réessayer.');
+            }
         } finally {
             setUploading(false);
         }

@@ -4,11 +4,19 @@ import axios from 'axios';
 import OpportuniteFilter from '../components/opportunites/OpportuniteFilter';
 import OpportuniteCard from '../components/opportunites/OpportuniteCard';
 
+import { useSelector } from 'react-redux';
+
 const Opportunites = () => {
     const navigate = useNavigate();
+    const { user } = useSelector((state) => state.auth);
     const [opportunites, setOpportunites] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    // Vérifier les droits de création
+    const allowedRoles = ['architecte', 'entreprise', 'admin'];
+    const userRole = user?.role || user?.user_type || '';
+    const canCreate = allowedRoles.includes(userRole);
 
     // États pour les filtres
     const [contractType, setContractType] = useState('');
@@ -58,17 +66,19 @@ const Opportunites = () => {
 
                 {/* LISTE DES OPPORTUNITÉS */}
                 <div className="w-full lg:w-3/4">
-                    <div className="flex justify-between items-center mb-6">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                         <div>
                             <h1 className="text-2xl font-bold text-gray-900">Toutes les Opportunités</h1>
                             <p className="text-sm text-gray-500 mt-1">Découvrez nos <span className="font-semibold">{filteredOpportunites.length}</span> offres disponibles</p>
                         </div>
-                        <button
-                            onClick={() => navigate('/opportunites/create')}
-                            className="bg-[#8B5E3C] hover:bg-[#6F4E37] text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2"
-                        >
-                            <span>+ Poster une opportunité</span>
-                        </button>
+                        {canCreate && (
+                            <button
+                                onClick={() => navigate('/opportunites/create')}
+                                className="bg-[#8B5E3C] hover:bg-[#6F4E37] text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2"
+                            >
+                                <span>+ Poster une opportunité</span>
+                            </button>
+                        )}
                     </div>
 
                     <div className="space-y-4">

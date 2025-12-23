@@ -6,7 +6,6 @@ const OpportuniteCard = ({ opp }) => {
     return (
         <div className="bg-white border border-gray-100 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col md:flex-row gap-6 relative group">
 
-            {/* Badge Type (Haut gauche) */}
             <div className={`absolute top-4 left-0 w-1 h-12 rounded-r-md ${opp.contract_type.includes('Stage') ? 'bg-green-400' :
                 opp.contract_type === 'CDI' ? 'bg-blue-500' : 'bg-purple-500'
                 }`}></div>
@@ -47,13 +46,13 @@ const OpportuniteCard = ({ opp }) => {
                     </p>
                 </div>
 
-                <div className="mt-4 flex items-center justify-between">
+                <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
                     <div className="text-xs text-gray-400">
                         Publié il y a {new Date(opp.created_at).toLocaleDateString()}
                     </div>
                     <button
                         onClick={() => navigate(`/opportunites/${opp.id}`)}
-                        className="bg-[#8B5E3C] text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-[#6F4E37] transition-colors"
+                        className="bg-[#8B5E3C] text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-[#6F4E37] transition-colors w-full sm:w-auto"
                     >
                         Voir l'offre
                     </button>

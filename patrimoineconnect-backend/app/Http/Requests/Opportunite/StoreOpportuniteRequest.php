@@ -11,8 +11,8 @@ class StoreOpportuniteRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // Vérifier que l'utilisateur est architecte ou entreprise
-        return in_array($this->user()->role, ['architecte', 'entreprise']);
+        // Vérifier que l'utilisateur est architecte, entreprise ou admin
+        return in_array($this->user()->role, ['architecte', 'entreprise', 'admin']);
     }
 
     /**
@@ -53,6 +53,6 @@ class StoreOpportuniteRequest extends FormRequest
      */
     public function failedAuthorization()
     {
-        abort(403, 'Seuls les architectes et entreprises peuvent créer des opportunités');
+        abort(403, 'Seuls les architectes, entreprises et admins peuvent créer des opportunités');
     }
 }

@@ -4,10 +4,8 @@ const OpportuniteSidebar = ({ user }) => {
     return (
         <div className="space-y-6">
 
-            {/* Profil Utilisateur */}
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
                 <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto mb-4 overflow-hidden">
-                    {/* Placeholder pour avatar si user n'a pas d'image */}
                     <img
                         src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                         alt="User Avatar"
@@ -35,8 +33,6 @@ const OpportuniteSidebar = ({ user }) => {
                     ✉️ Contacter l'émetteur
                 </button>
             </div>
-
-            {/* Statistiques */}
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                 <h3 className="font-bold text-gray-900 mb-4">Statistiques</h3>
                 <div className="space-y-3 text-sm">

@@ -52,7 +52,7 @@ const Register = () => {
 
     return (
         <div className="w-full font-sans flex flex-col min-h-screen justify-center bg-gray-50">
-            <main className="flex-grow flex justify-center items-center px-0 py-4 overflow-auto">
+            <main className="flex-grow flex justify-center items-center px-4 py-4 overflow-auto">
                 <div className="w-full max-w-[500px] bg-white rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.08)] p-6 border border-gray-100">
 
                     {/* Header */}
