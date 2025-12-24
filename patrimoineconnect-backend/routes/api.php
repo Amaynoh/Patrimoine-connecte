@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\OpportuniteController;
 use App\Http\Controllers\Api\HomeController;
 
+use App\Http\Controllers\Api\PortfolioController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -51,8 +53,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/profile', [ProfileController::class, 'update']);
     Route::post('/profile/photo', [ProfileController::class, 'uploadPhoto']);
     
+    // Portfolio
+    Route::get('/portfolio', [PortfolioController::class, 'index']);
+    Route::post('/portfolio', [PortfolioController::class, 'store']);
+    Route::delete('/portfolio/{id}', [PortfolioController::class, 'destroy']);
+    
     // Opportunités (création, modification, suppression)
     Route::post('/opportunites', [OpportuniteController::class, 'store']);
     Route::put('/opportunites/{opportunite}', [OpportuniteController::class, 'update']);
     Route::delete('/opportunites/{opportunite}', [OpportuniteController::class, 'destroy']);
 });
+

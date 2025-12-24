@@ -25,9 +25,9 @@ const LoginPage = () => {
         try {
             const response = await api.post('/login', { email, password });
 
-            // Stockage dans localStorage
-            localStorage.setItem('token', response.data.token);
-            localStorage.setItem('user', JSON.stringify(response.data.user));
+            // Stockage dans sessionStorage (expire à la fermeture du navigateur)
+            sessionStorage.setItem('token', response.data.token);
+            sessionStorage.setItem('user', JSON.stringify(response.data.user));
 
             // Mise à jour du store Redux
             dispatch(loginSuccess({

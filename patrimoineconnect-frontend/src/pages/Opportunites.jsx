@@ -12,20 +12,15 @@ const Opportunites = () => {
     const [opportunites, setOpportunites] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
-    // Vérifier les droits de création
     const allowedRoles = ['architecte', 'entreprise', 'admin'];
     const userRole = user?.role || user?.user_type || '';
     const canCreate = allowedRoles.includes(userRole);
-
-    // États pour les filtres
     const [contractType, setContractType] = useState('');
     const [location, setLocation] = useState('');
 
     useEffect(() => {
         const fetchOpportunites = async () => {
             try {
-                // Utilisation de l'URL de l'API (à adapter si variable d'env)
                 const response = await axios.get('http://127.0.0.1:8000/api/opportunites');
                 setOpportunites(response.data);
                 setLoading(false);
@@ -38,8 +33,6 @@ const Opportunites = () => {
 
         fetchOpportunites();
     }, []);
-
-    // Filtrage simple côté client
     const filteredOpportunites = opportunites.filter(opp => {
         return (
             (contractType === '' || opp.contract_type === contractType) &&
@@ -53,8 +46,6 @@ const Opportunites = () => {
     return (
         <div className="bg-[#FAF7F2] min-h-screen py-10 px-4 sm:px-6 lg:px-8 font-sans">
             <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
-
-                {/* SIDEBAR FILTRES */}
                 <div className="w-full lg:w-1/4">
                     <OpportuniteFilter
                         contractType={contractType}
@@ -63,8 +54,6 @@ const Opportunites = () => {
                         setLocation={setLocation}
                     />
                 </div>
-
-                {/* LISTE DES OPPORTUNITÉS */}
                 <div className="w-full lg:w-3/4">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                         <div>
@@ -85,8 +74,6 @@ const Opportunites = () => {
                         {filteredOpportunites.map((opp) => (
                             <OpportuniteCard key={opp.id} opp={opp} />
                         ))}
-
-                        {/* État vide */}
                         {filteredOpportunites.length === 0 && (
                             <div className="bg-white p-8 rounded-lg shadow-sm text-center">
                                 <p className="text-gray-500">Aucune opportunité ne correspond à vos critères.</p>

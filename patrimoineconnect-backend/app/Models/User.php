@@ -55,4 +55,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Opportunite::class);
     }
+
+    /**
+     * Get the portfolio images for the user.
+     */
+    public function portfolio()
+    {
+        return $this->hasMany(PortfolioImage::class);
+    }
 }

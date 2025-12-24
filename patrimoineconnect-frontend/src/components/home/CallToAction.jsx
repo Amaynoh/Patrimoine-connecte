@@ -1,6 +1,24 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const CallToAction = () => {
+    const navigate = useNavigate();
+
+    // Vérifier si l'utilisateur est connecté
+    const { user } = useSelector((state) => state.auth);
+    const isAuthenticated = !!user;
+
+    // Gérer le clic sur "Découvrir l'annuaire"
+    const handleAnnuaireClick = () => {
+        if (isAuthenticated) {
+            // Si connecté, aller vers l'annuaire
+            navigate('/annuaire');
+        } else {
+            // Si non connecté, rediriger vers inscription
+            navigate('/register');
+        }
+    };
+
     return (
         <section className="relative py-20 bg-gradient-to-r from-[#78350f] to-[#b45309]">
             <div className="max-w-4xl mx-auto px-4 text-center">
@@ -11,18 +29,18 @@ const CallToAction = () => {
                     Participez à la préservation du patrimoine marocain.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Link
-                        to="/register"
+                    <button
+                        onClick={() => navigate('/register')}
                         className="bg-white text-[#78350f] px-8 py-4 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all"
                     >
                         Créer mon profil
-                    </Link>
-                    <Link
-                        to="#"
+                    </button>
+                    <button
+                        onClick={handleAnnuaireClick}
                         className="text-white px-8 py-4 rounded-xl font-bold border-2 border-white/50 hover:border-white transition-all"
                     >
                         Découvrir l'annuaire
-                    </Link>
+                    </button>
                 </div>
             </div>
         </section>

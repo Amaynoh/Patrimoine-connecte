@@ -3,47 +3,45 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\UserSearchRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    /**
-     * Afficher l'annuaire des professionnels avec filtres
-     */
-    public function index(UserSearchRequest $request)
+    public function index(Request $request)
     {
         $query = User::query();
 
-        // Filtre par rôle
-        if ($request->has('role')) {
+        if ($request->has('role') && $request->role) {
             $query->where('role', $request->role);
         }
-
-        // Filtre par ville
-        if ($request->has('city')) {
+        if ($request->has('city') && $request->city) {
             $query->where('city', $request->city);
         }
 
-        // Filtre par spécialité
-        if ($request->has('specialty')) {
+        if ($request->has('specialty') && $request->specialty) {
             $query->where('specialty', 'like', '%' . $request->specialty . '%');
         }
 
-        $users = $query->select('id', 'name', 'role', 'city', 'specialty', 'bio')->get();
+        $users = $query->select('id', 'name', 'role', 'city', 'specialty', 'bio', 'photo')
+                       ->orderBy('created_at', 'desc')
+                       ->get();
 
         return response()->json($users);
     }
 
-    /**
-     * Afficher un profil public
-     */
     public function show($id)
     {
-        $user = User::select('id', 'name', 'role', 'city', 'specialty', 'bio', 'phone')
-            ->findOrFail($id);
+        $user = User::with('portfolio')
+                    ->select('id', 'name', 'role', 'city', 'specialty', 'bio', 'phone', 'email', 'photo')
+                    ->find($id);
+        
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non trouvé'], 404);
+        }
 
         return response()->json($user);
     }
 }
+
+

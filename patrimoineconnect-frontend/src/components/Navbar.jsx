@@ -18,8 +18,8 @@ const Navbar = () => {
     const canCreate = allowedRoles.includes(userRole);
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('user');
         dispatch(logout());
         navigate('/login');
         setIsOpen(false);
