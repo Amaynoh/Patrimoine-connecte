@@ -10,10 +10,7 @@ const Navbar = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    // Rôles autorisés à créer des opportunités
     const allowedRoles = ['architecte', 'entreprise', 'admin'];
-
-    // Vérifier si l'utilisateur peut créer (check role et user_type pour compatibilité)
     const userRole = user?.role || user?.user_type || '';
     const canCreate = allowedRoles.includes(userRole);
 
@@ -45,8 +42,6 @@ const Navbar = () => {
                         PatrimoineConnect
                     </span>
                 </Link>
-
-                {/* Desktop menu */}
                 <div className="hidden md:flex items-center space-x-4 lg:space-x-8">
                     <Link to="/opportunites" className="text-gray-700 hover:text-[#D4A373] transition-colors font-medium text-sm lg:text-base">
                         Opportunités
@@ -54,6 +49,12 @@ const Navbar = () => {
 
                     {isAuthenticated ? (
                         <>
+                            <Link
+                                to="/dashboard"
+                                className="text-sm font-semibold text-gray-600 hover:text-[#78350f] transition-colors"
+                            >
+                                Dashboard
+                            </Link>
                             <Link
                                 to="/profile"
                                 className="text-sm font-semibold text-gray-600 hover:text-[#78350f] transition-colors"
@@ -94,8 +95,6 @@ const Navbar = () => {
                         </>
                     )}
                 </div>
-
-                {/* Mobile hamburger */}
                 <button
                     onClick={() => setIsOpen(!isOpen)}
                     className="md:hidden text-gray-700 focus:outline-none"
@@ -112,8 +111,6 @@ const Navbar = () => {
                     )}
                 </button>
             </div>
-
-            {/* Mobile menu */}
             <div
                 className={`md:hidden overflow-hidden transition-all duration-300 ${isOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
                     }`}
@@ -130,13 +127,19 @@ const Navbar = () => {
                     {isAuthenticated ? (
                         <>
                             <Link
+                                to="/dashboard"
+                                onClick={() => setIsOpen(false)}
+                                className="block text-gray-700 font-semibold"
+                            >
+                                🏠 Dashboard
+                            </Link>
+                            <Link
                                 to="/profile"
                                 onClick={() => setIsOpen(false)}
                                 className="block text-gray-700 font-semibold"
                             >
                                 👤 Mon Profil
                             </Link>
-                            {/* Créer visible uniquement pour architecte, entreprise et admin */}
                             {canCreate && (
                                 <Link
                                     to="/opportunites/create"

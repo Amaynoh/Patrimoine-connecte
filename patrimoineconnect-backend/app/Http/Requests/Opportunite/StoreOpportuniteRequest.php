@@ -50,8 +50,9 @@ class StoreOpportuniteRequest extends FormRequest
 
     /**
      * Message d'erreur d'autorisation personnalisé.
+     * Cette méthode est appelée automatiquement si authorize() retourne false.
      */
-    public function failedAuthorization()
+    protected function failedAuthorization(): void
     {
         abort(403, 'Seuls les architectes, entreprises et admins peuvent créer des opportunités');
     }

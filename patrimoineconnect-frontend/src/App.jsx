@@ -8,9 +8,11 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
+import Dashboard from "./pages/Dashboard";
 
 import Opportunites from "./pages/Opportunites";
 import CreateOpportunite from "./pages/CreateOpportunite";
+import EditOpportunite from "./pages/EditOpportunite";
 import OpportuniteDetail from "./pages/OpportuniteDetail";
 import Annuaire from "./pages/Annuaire";
 import ProfilPublic from './pages/ProfilPublic';
@@ -32,11 +34,19 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/opportunites/edit/:id"
+            element={
+              <ProtectedRoute>
+                <EditOpportunite />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/opportunites/:id" element={<OpportuniteDetail />} />
           <Route path="/annuaire" element={<Annuaire />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          
+
           <Route
             path="/profile"
             element={
@@ -45,9 +55,17 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/profil/:id" element={<ProfilPublic />} />
 
-        </Routes> 
+        </Routes>
       </div>
       <Footer />
     </Router>

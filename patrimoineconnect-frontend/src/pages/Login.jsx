@@ -24,12 +24,8 @@ const LoginPage = () => {
 
         try {
             const response = await api.post('/login', { email, password });
-
-            // Stockage dans sessionStorage (expire à la fermeture du navigateur)
             sessionStorage.setItem('token', response.data.token);
             sessionStorage.setItem('user', JSON.stringify(response.data.user));
-
-            // Mise à jour du store Redux
             dispatch(loginSuccess({
                 user: response.data.user,
                 token: response.data.token
@@ -42,18 +38,13 @@ const LoginPage = () => {
             setLoading(false);
         }
     };
-
-    // ... reste du rendu identique ...
     return (
         <div className="w-full flex-grow flex justify-center items-center px-4 py-4">
             <div className="w-full max-w-[450px] bg-white rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.08)] p-6 border border-gray-100">
-
-                {/* Header */}
                 <div className="flex flex-col items-center text-center mb-4">
                     <h1 className="text-lg font-bold text-slate-900 mb-1">Ravi de vous revoir</h1>
                 </div>
 
-                {/* Messages */}
                 {successMessage && (
                     <div className="mb-2 p-2 rounded bg-emerald-50 text-emerald-700 text-xs flex items-center border border-emerald-100">
                         <span className="mr-2">✅</span> {successMessage}

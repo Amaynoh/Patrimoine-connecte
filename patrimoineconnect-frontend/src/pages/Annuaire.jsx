@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import SearchBar from '../components/annuaire/SearchBar';
 import UserCard from '../components/annuaire/UserCard';
-
-
 const Annuaire = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);

@@ -8,6 +8,9 @@ use App\Models\Opportunite;
 use App\Http\Requests\Opportunite\StoreOpportuniteRequest;
 use App\Http\Requests\Opportunite\UpdateOpportuniteRequest;
 
+// Import de notre Event personnalisé
+use App\Events\OpportuniteCreee;
+
 class OpportuniteController extends Controller
 {
     /**
@@ -34,6 +37,9 @@ class OpportuniteController extends Controller
 
     /**
      * Créer une nouvelle opportunité
+     * 
+     * SÉCURITÉ : La vérification du rôle (architecte/entreprise/admin) 
+     * est faite dans StoreOpportuniteRequest->authorize()
      */
     public function store(StoreOpportuniteRequest $request)
     {
@@ -50,6 +56,10 @@ class OpportuniteController extends Controller
         ]);
 
         $opportunite->load('user:id,name,role');
+
+        // DÉCLENCHER L'ÉVÉNEMENT : Notifier qu'une opportunité a été créée
+        // Cela va automatiquement appeler EnvoyerNotificationAdmin->handle()
+        event(new OpportuniteCreee($opportunite));
 
         return response()->json([
             'opportunite' => $opportunite,
@@ -73,7 +83,7 @@ class OpportuniteController extends Controller
     public function update(UpdateOpportuniteRequest $request, Opportunite $opportunite)
     {
 
-        $opportunite->update($request->only(['title', 'description', 'type', 'location', 'missions', 'competences', 'budget', 'deadline']));
+        $opportunite->update($request->only(['title', 'description', 'type', 'contract_type', 'location', 'missions', 'competences', 'budget', 'deadline']));
 
         $opportunite->load('user:id,name,role');
 
@@ -101,4 +111,19 @@ class OpportuniteController extends Controller
             'message' => 'Opportunité supprimée avec succès'
         ]);
     }
+
+    /**
+     * Récupérer les opportunités de l'utilisateur connecté (pour le Dashboard)
+     */
+    public function myOpportunities(Request $request)
+    {
+        $opportunites = $request->user()
+            ->opportunites()
+            ->with('user:id,name,role')
+            ->latest()
+            ->get();
+
+        return response()->json($opportunites);
+    }
 }
+

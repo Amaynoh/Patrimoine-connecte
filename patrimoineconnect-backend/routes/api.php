@@ -32,7 +32,6 @@ Route::post('/login', [AuthController::class, 'login']);
 // Données page Home (publiques)
 Route::get('/projets', [HomeController::class, 'projets']);
 Route::get('/etapes', [HomeController::class, 'etapes']);
-// Route::get('/temoignages', [TemoignageController::class, 'index']); // Controller non existant
 
 // Opportunités publiques
 Route::get('/opportunites', [OpportuniteController::class, 'index']);
@@ -62,5 +61,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/opportunites', [OpportuniteController::class, 'store']);
     Route::put('/opportunites/{opportunite}', [OpportuniteController::class, 'update']);
     Route::delete('/opportunites/{opportunite}', [OpportuniteController::class, 'destroy']);
+    
+    // Mes opportunités (pour le Dashboard)
+    Route::get('/my-opportunities', [OpportuniteController::class, 'myOpportunities']);
 });
 

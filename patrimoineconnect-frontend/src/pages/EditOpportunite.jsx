@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import api from '../api/axios';
 
-const CreateOpportunite = () => {
+const EditOpportunite = () => {
+    const { id } = useParams();
     const navigate = useNavigate();
+    const { user } = useSelector((state) => state.auth);
+
     const [formData, setFormData] = useState({
         title: '',
         type: 'emploi',
@@ -11,9 +15,59 @@ const CreateOpportunite = () => {
         location: '',
         description: '',
         organization: '',
+        missions: '',
+        competences: '',
+        budget: '',
+        deadline: '',
     });
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState(null);
+
+    // Charger les données de l'opportunité existante
+    useEffect(() => {
+        const fetchOpportunite = async () => {
+            try {
+                const response = await api.get(`/opportunites/${id}`);
+                const data = response.data;
+
+                // Vérifier que l'utilisateur est le propriétaire
+                if (data.user_id !== user?.id) {
+                    setError("Vous n'êtes pas autorisé à modifier cette opportunité.");
+                    setLoading(false);
+                    return;
+                }
+
+                // Convertir les tableaux en texte (un élément par ligne)
+                const missionsText = Array.isArray(data.missions)
+                    ? data.missions.join('\n')
+                    : data.missions || '';
+                const competencesText = Array.isArray(data.competences)
+                    ? data.competences.join('\n')
+                    : data.competences || '';
+
+                setFormData({
+                    title: data.title || '',
+                    type: data.type || 'emploi',
+                    contract_type: data.contract_type || 'CDI',
+                    location: data.location || '',
+                    description: data.description || '',
+                    organization: data.organization || '',
+                    missions: missionsText,
+                    competences: competencesText,
+                    budget: data.budget || '',
+                    deadline: data.deadline || '',
+                });
+                setLoading(false);
+            } catch (err) {
+                console.error(err);
+                setError("Erreur lors du chargement de l'opportunité.");
+                setLoading(false);
+            }
+        };
+
+        fetchOpportunite();
+    }, [id, user?.id]);
 
     const handleChange = (e) => {
         setFormData({
@@ -28,36 +82,70 @@ const CreateOpportunite = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
+        setSubmitting(true);
         setError(null);
 
         try {
-            const missionsArray = formData.missions ? formData.missions.split('\n').filter(item => item.trim() !== '') : [];
-            const competencesArray = formData.competences ? formData.competences.split('\n').filter(item => item.trim() !== '') : [];
+            // Convertir les missions et compétences en tableaux
+            const missionsArray = formData.missions
+                ? formData.missions.split('\n').filter(item => item.trim() !== '')
+                : [];
+            const competencesArray = formData.competences
+                ? formData.competences.split('\n').filter(item => item.trim() !== '')
+                : [];
 
-            await api.post('/opportunites', {
+            await api.put(`/opportunites/${id}`, {
                 ...formData,
-                organization: formData.organization || 'Particulier',
                 missions: missionsArray,
                 competences: competencesArray
             });
-            navigate('/opportunites');
+
+            navigate('/dashboard');
         } catch (err) {
             console.error(err);
-            const message = err.response?.data?.message || "Erreur lors de la publication.";
+            const message = err.response?.data?.message || "Erreur lors de la modification.";
             if (err.response?.status === 422) {
                 const errors = Object.values(err.response.data.errors).flat().join(', ');
                 setError(`Données invalides : ${errors}`);
-            }
-            else if (err.response?.status === 403) {
-                setError("Vous n'êtes pas autorisé à publier (Réservé aux Architectes/Entreprises).");
-            }
-            else {
+            } else if (err.response?.status === 403) {
+                setError("Vous n'êtes pas autorisé à modifier cette opportunité.");
+            } else {
                 setError(message);
             }
-            setLoading(false);
+            setSubmitting(false);
         }
     };
+
+    // Affichage pendant le chargement
+    if (loading) {
+        return (
+            <div className="bg-[#FAF7F2] min-h-screen py-10 px-4 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1e3a8a] mx-auto"></div>
+                    <p className="mt-4 text-gray-600">Chargement...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Affichage en cas d'erreur d'autorisation
+    if (error && loading === false && !formData.title) {
+        return (
+            <div className="bg-[#FAF7F2] min-h-screen py-10 px-4">
+                <div className="max-w-3xl mx-auto">
+                    <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+                        <p className="text-red-600 font-medium">{error}</p>
+                        <button
+                            onClick={() => navigate('/dashboard')}
+                            className="mt-4 bg-[#1e3a8a] text-white px-6 py-2 rounded-lg font-medium hover:bg-[#1e40af]"
+                        >
+                            Retour au Dashboard
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="bg-[#FAF7F2] min-h-screen py-10 px-4 sm:px-6 lg:px-8 font-sans">
@@ -70,11 +158,12 @@ const CreateOpportunite = () => {
                 </button>
 
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-[#1e3a8a]">Publier une Nouvelle Opportunité</h1>
-                    <p className="text-gray-500 mt-2">Créez une annonce pour partager vos projets et opportunités avec la communauté PatrimoineConnect</p>
+                    <h1 className="text-3xl font-bold text-[#1e3a8a]">Modifier l'Opportunité</h1>
+                    <p className="text-gray-500 mt-2">Mettez à jour les informations de votre opportunité</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-8 space-y-8">
+                    {/* Titre */}
                     <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">
                             Titre de l'opportunité <span className="text-red-500">*</span>
@@ -89,6 +178,8 @@ const CreateOpportunite = () => {
                             required
                         />
                     </div>
+
+                    {/* Type d'opportunité */}
                     <div>
                         <label className="block text-sm font-bold text-gray-700 mb-3">
                             Type d'opportunité <span className="text-red-500">*</span>
@@ -140,6 +231,8 @@ const CreateOpportunite = () => {
                             ))}
                         </div>
                     </div>
+
+                    {/* Localisation */}
                     <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">
                             Localisation <span className="text-red-500">*</span>
@@ -159,6 +252,8 @@ const CreateOpportunite = () => {
                             <option value="Tanger">Tanger</option>
                         </select>
                     </div>
+
+                    {/* Description */}
                     <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">
                             Description détaillée <span className="text-red-500">*</span>
@@ -168,18 +263,20 @@ const CreateOpportunite = () => {
                             value={formData.description}
                             onChange={handleChange}
                             rows="5"
-                            placeholder="Décrivez votre opportunité, les objectifs, les exigences et les bénéfices attendus..."
+                            placeholder="Décrivez votre opportunité..."
                             className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]/20 focus:border-[#1e3a8a] transition-all text-sm resize-none"
                             required
                         ></textarea>
                     </div>
+
+                    {/* Missions */}
                     <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">
                             Objectifs de la Mission (un par ligne)
                         </label>
                         <textarea
                             name="missions"
-                            value={formData.missions || ''}
+                            value={formData.missions}
                             onChange={handleChange}
                             rows="4"
                             placeholder="- Réaliser un diagnostic...&#10;- Élaborer un plan..."
@@ -187,13 +284,15 @@ const CreateOpportunite = () => {
                         ></textarea>
                         <p className="text-xs text-gray-400 mt-1">Séparez chaque objectif par une nouvelle ligne.</p>
                     </div>
+
+                    {/* Compétences */}
                     <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">
                             Compétences Requises (une par ligne)
                         </label>
                         <textarea
                             name="competences"
-                            value={formData.competences || ''}
+                            value={formData.competences}
                             onChange={handleChange}
                             rows="4"
                             placeholder="Architecture du patrimoine&#10;Restauration..."
@@ -201,6 +300,8 @@ const CreateOpportunite = () => {
                         ></textarea>
                         <p className="text-xs text-gray-400 mt-1">Séparez chaque compétence par une nouvelle ligne.</p>
                     </div>
+
+                    {/* Budget et Date limite */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-2">
@@ -209,7 +310,7 @@ const CreateOpportunite = () => {
                             <input
                                 type="text"
                                 name="budget"
-                                value={formData.budget || ''}
+                                value={formData.budget}
                                 onChange={handleChange}
                                 placeholder="Ex: 10 000 - 15 000 MAD"
                                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]/20 focus:border-[#1e3a8a] transition-all text-sm"
@@ -222,12 +323,14 @@ const CreateOpportunite = () => {
                             <input
                                 type="date"
                                 name="deadline"
-                                value={formData.deadline || ''}
+                                value={formData.deadline}
                                 onChange={handleChange}
                                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]/20 focus:border-[#1e3a8a] transition-all text-sm"
                             />
                         </div>
                     </div>
+
+                    {/* Boutons d'action */}
                     <div className="pt-4 flex items-center justify-between border-t border-gray-100 mt-8">
                         <button
                             type="button"
@@ -238,32 +341,18 @@ const CreateOpportunite = () => {
                         </button>
                         <button
                             type="submit"
-                            disabled={loading}
-                            className={`bg-[#1e3a8a] text-white px-8 py-3 rounded-lg font-bold shadow-lg hover:bg-[#1e40af] transition-all transform hover:-translate-y-0.5 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                            disabled={submitting}
+                            className={`bg-[#1e3a8a] text-white px-8 py-3 rounded-lg font-bold shadow-lg hover:bg-[#1e40af] transition-all transform hover:-translate-y-0.5 ${submitting ? 'opacity-70 cursor-not-allowed' : ''}`}
                         >
-                            {loading ? 'Publication...' : "Publier l'opportunité"}
+                            {submitting ? 'Enregistrement...' : "Enregistrer les modifications"}
                         </button>
                     </div>
 
                     {error && <p className="text-red-500 text-sm text-center mt-2">{error}</p>}
-
                 </form>
-                <div className="mt-8 bg-[#fdf6b2] rounded-lg p-6 flex gap-4 text-[#92400e]">
-                    <div className="text-2xl">💡</div>
-                    <div className="text-sm">
-                        <h4 className="font-bold mb-2">Conseils pour une publication réussie</h4>
-                        <ul className="list-disc pl-4 space-y-1 opacity-90">
-                            <li>Rédigez un titre clair et accrocheur</li>
-                            <li>Détaillez les compétences recherchées</li>
-                            <li>Mentionnez les bénéfices et la rémunération</li>
-                            <li>Ajoutez des mots-clés pertinents pour améliorer la visibilité</li>
-                        </ul>
-                    </div>
-                </div>
-
             </div>
         </div>
     );
 };
 
-export default CreateOpportunite;
+export default EditOpportunite;

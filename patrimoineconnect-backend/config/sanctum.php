@@ -43,9 +43,13 @@ return [
     | considered expired. This will override any values set in the token's
     | "expires_at" attribute, but first-party sessions are not affected.
     |
+    | EXPLICATION : 24 heures = 60 min * 24 = 1440 minutes
+    | Quand le token expire, Sanctum renvoie automatiquement une erreur 401.
+    | Le frontend peut intercepter cette erreur et rediriger vers /login.
+    |
     */
 
-    'expiration' => null,
+    'expiration' => 60 * 24, // 24 heures
 
     /*
     |--------------------------------------------------------------------------

@@ -11,10 +11,8 @@ class UpdateOpportuniteRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // Récupérer l'opportunité depuis la route
         $opportunite = $this->route('opportunite');
         
-        // Vérifier que l'utilisateur est le propriétaire
         return $opportunite && $opportunite->user_id === $this->user()->id;
     }
 
@@ -27,6 +25,7 @@ class UpdateOpportuniteRequest extends FormRequest
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
             'type' => 'sometimes|in:emploi,projet,collaboration',
+            'contract_type' => 'sometimes|in:CDI,Stage,Stage (PFE),Bénévolat',
             'location' => 'sometimes|string|max:255',
         ];
     }
