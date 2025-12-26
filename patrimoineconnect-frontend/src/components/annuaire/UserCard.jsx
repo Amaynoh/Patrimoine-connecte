@@ -17,7 +17,7 @@ const UserCard = ({ user }) => {
             <div className="h-48 bg-gray-200 flex items-center justify-center overflow-hidden">
                 {user.photo ? (
                     <img
-                        src={`http://127.0.0.1:8000/storage/${user.photo}`}
+                        src={user.photo.startsWith('http') ? user.photo : `http://127.0.0.1:8000/storage/${user.photo}`}
                         alt={user.name}
                         className="w-full h-full object-cover"
                     />

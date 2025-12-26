@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../features/auth/authSlice";
+import { useAuth } from "../context/AuthContext";
 import logo from "../assets/logo.png";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const { isAuthenticated, user } = useSelector((state) => state.auth);
-    const dispatch = useDispatch();
+    const { isAuthenticated, user, logout } = useAuth();
     const navigate = useNavigate();
 
     const allowedRoles = ['architecte', 'entreprise', 'admin'];
@@ -15,9 +13,7 @@ const Navbar = () => {
     const canCreate = allowedRoles.includes(userRole);
 
     const handleLogout = () => {
-        sessionStorage.removeItem('token');
-        sessionStorage.removeItem('user');
-        dispatch(logout());
+        logout();
         navigate('/login');
         setIsOpen(false);
     };
@@ -67,7 +63,6 @@ const Navbar = () => {
                             >
                                 Se déconnecter
                             </button>
-                            {/* Bouton Créer visible uniquement pour les rôles autorisés */}
                             {canCreate && (
                                 <Link
                                     to="/opportunites/create"

@@ -6,18 +6,12 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProfileRequest extends FormRequest
 {
-    /**
-     * Détermine si l'utilisateur est autorisé à faire cette requête.
-     */
     public function authorize(): bool
     {
-        // L'utilisateur doit être authentifié (géré par le middleware auth:sanctum)
+        
         return true;
     }
 
-    /**
-     * Règles de validation pour la mise à jour du profil.
-     */
     public function rules(): array
     {
         return [
@@ -30,9 +24,6 @@ class UpdateProfileRequest extends FormRequest
         ];
     }
 
-    /**
-     * Messages d'erreur personnalisés.
-     */
     public function messages(): array
     {
         return [

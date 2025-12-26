@@ -4,37 +4,26 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\UpdateProfileRequest;
+use App\Models\PortfolioImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
-    /**
-     * Afficher le profil de l'utilisateur connecté
-     */
     public function show(Request $request)
     {
         return response()->json($request->user());
     }
 
-    /**
-     * Modifier le profil de l'utilisateur connecté
-     */
     public function update(UpdateProfileRequest $request)
     {
         $user = $request->user();
-
-        // Mise à jour des champs texte
         $user->update($request->only(['name', 'city', 'specialty', 'bio', 'phone']));
-
-        // Gestion de l'upload de la photo de profil
+        
         if ($request->hasFile('photo')) {
-            // Supprimer l'ancienne photo si elle existe
             if ($user->photo && Storage::disk('public')->exists($user->photo)) {
                 Storage::disk('public')->delete($user->photo);
             }
-            
-            // Stocker la nouvelle photo
             $path = $request->file('photo')->store('profiles', 'public');
             $user->photo = $path;
             $user->save();
@@ -46,9 +35,6 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Uploader une photo de profil séparément
-     */
     public function uploadPhoto(Request $request)
     {
         $request->validate([
@@ -57,12 +43,10 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
-        // Supprimer l'ancienne photo
         if ($user->photo && Storage::disk('public')->exists($user->photo)) {
             Storage::disk('public')->delete($user->photo);
         }
 
-        // Stocker la nouvelle photo
         $path = $request->file('photo')->store('profiles', 'public');
         $user->photo = $path;
         $user->save();
@@ -72,5 +56,59 @@ class ProfileController extends Controller
             'photo_url' => asset('storage/' . $path),
             'message' => 'Photo mise à jour avec succès'
         ]);
+    }
+
+    public function getPortfolio(Request $request)
+    {
+        $images = $request->user()->portfolio()->orderBy('created_at', 'desc')->get();
+        $images->transform(function ($image) {
+            $image->url = str_starts_with($image->image_path, 'http') 
+                ? $image->image_path 
+                : asset('storage/' . $image->image_path);
+            return $image;
+        });
+        return response()->json($images);
+    }
+
+    public function addPortfolioImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'title' => 'nullable|string|max:255'
+        ]);
+
+        $user = $request->user();
+        $path = $request->file('image')->store('portfolio/' . $user->id, 'public');
+
+        $portfolioImage = PortfolioImage::create([
+            'user_id' => $user->id,
+            'image_path' => $path,
+            'title' => $request->input('title')
+        ]);
+
+        $portfolioImage->url = asset('storage/' . $path);
+
+        return response()->json([
+            'image' => $portfolioImage,
+            'message' => 'Image ajoutée avec succès'
+        ], 201);
+    }
+
+    public function deletePortfolioImage(Request $request, $id)
+    {
+        $user = $request->user();
+        
+        $image = PortfolioImage::where('id', $id)->where('user_id', $user->id)->first();
+
+        if (!$image) {
+            return response()->json(['message' => 'Image non trouvée'], 404);
+        }
+
+        if (Storage::disk('public')->exists($image->image_path)) {
+            Storage::disk('public')->delete($image->image_path);
+        }
+        
+        $image->delete();
+        return response()->json(['message' => 'Image supprimée avec succès']);
     }
 }

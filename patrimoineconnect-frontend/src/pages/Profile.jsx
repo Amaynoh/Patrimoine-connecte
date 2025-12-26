@@ -9,13 +9,7 @@ import PortfolioSection from '../components/profile/PortfolioSection';
 const Profile = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
-    const [formData, setFormData] = useState({
-        name: '',
-        city: '',
-        specialty: '',
-        phone: '',
-        bio: ''
-    });
+    const [formData, setFormData] = useState({ name: '', city: '', specialty: '', phone: '', bio: '' });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
@@ -24,127 +18,62 @@ const Profile = () => {
     const [uploadingImages, setUploadingImages] = useState(false);
 
     useEffect(() => {
-        const fetchProfile = async () => {
+        const fetchData = async () => {
             try {
-                const response = await api.get('/profile');
-                const userData = response.data;
-                setUser(userData);
-                setFormData({
-                    name: userData.name || '',
-                    city: userData.city || '',
-                    specialty: userData.specialty || '',
-                    phone: userData.phone || '',
-                    bio: userData.bio || ''
-                });
-                setLoading(false);
-            } catch (err) {
-                console.error('Erreur:', err);
-                setError('Impossible de charger le profil');
-                setLoading(false);
-            }
-        };
+                const res = await api.get('/profile');
+                const u = res.data;
+                setUser(u);
+                setFormData({ name: u.name || '', city: u.city || '', specialty: u.specialty || '', phone: u.phone || '', bio: u.bio || '' });
+            } catch { setError('Impossible de charger le profil'); }
+            setLoading(false);
 
-        // Charger les images du portfolio
-        const fetchPortfolio = async () => {
             try {
-                const response = await api.get('/portfolio');
-                const images = response.data.map(img => ({
-                    id: img.id,
-                    preview: img.url,
-                    name: img.title || 'Image portfolio'
-                }));
-                setPortfolioImages(images);
-            } catch (err) {
-                console.error('Erreur chargement portfolio:', err);
-            }
+                const res = await api.get('/profile/portfolio');
+                setPortfolioImages(res.data.map(img => ({ id: img.id, preview: img.url, name: img.title || 'Image' })));
+            } catch { }
         };
-
-        fetchProfile();
-        fetchPortfolio();
+        fetchData();
     }, []);
 
-    const handlePhotoUpdate = (updatedUser) => {
-        setUser(updatedUser);
-    };
-
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-        setError('');
-        setSuccess('');
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+        setError(''); setSuccess('');
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setSaving(true);
-        setError('');
-        setSuccess('');
-
+        setSaving(true); setError(''); setSuccess('');
         try {
-            const response = await api.put('/profile', formData);
-            setUser(response.data.user);
-            setSuccess('Profil mis à jour avec succès !');
+            const res = await api.put('/profile', formData);
+            setUser(res.data.user);
+            setSuccess('Profil mis à jour !');
         } catch (err) {
-            if (err.response?.status === 422) {
-                const errors = Object.values(err.response.data.errors).flat().join(', ');
-                setError(`Erreur: ${errors}`);
-            } else {
-                setError('Erreur lors de la mise à jour');
-            }
-        } finally {
-            setSaving(false);
-        }
+            setError(err.response?.status === 422 ? Object.values(err.response.data.errors).flat().join(', ') : 'Erreur');
+        } finally { setSaving(false); }
     };
 
-    // Uploader les nouvelles images vers l'API
     const handleAddPortfolioImages = async (newFiles) => {
         setUploadingImages(true);
-
-        for (const fileData of newFiles) {
+        for (const f of newFiles) {
             try {
-                const formData = new FormData();
-                formData.append('image', fileData.file);
-                formData.append('title', fileData.name);
-
-                const response = await api.post('/portfolio', formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' }
-                });
-
-                // Ajouter l'image retournée par l'API
-                const savedImage = response.data.image;
-                setPortfolioImages(prev => [...prev, {
-                    id: savedImage.id,
-                    preview: savedImage.url,
-                    name: savedImage.title || 'Image portfolio'
-                }]);
-            } catch (err) {
-                console.error('Erreur upload image:', err);
-                setError('Erreur lors de l\'upload d\'une image');
-            }
+                const fd = new FormData();
+                fd.append('image', f.file);
+                fd.append('title', f.name);
+                const res = await api.post('/profile/portfolio', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+                setPortfolioImages(prev => [...prev, { id: res.data.image.id, preview: res.data.image.url, name: res.data.image.title || 'Image' }]);
+            } catch { setError('Erreur upload'); }
         }
-
         setUploadingImages(false);
     };
 
-    // Supprimer une image via l'API
-    const handleRemovePortfolioImage = async (imageId) => {
+    const handleRemovePortfolioImage = async (id) => {
         try {
-            await api.delete(`/portfolio/${imageId}`);
-            setPortfolioImages(portfolioImages.filter(img => img.id !== imageId));
-        } catch (err) {
-            console.error('Erreur suppression image:', err);
-            setError('Erreur lors de la suppression de l\'image');
-        }
+            await api.delete(`/profile/portfolio/${id}`);
+            setPortfolioImages(prev => prev.filter(img => img.id !== id));
+        } catch { setError('Erreur suppression'); }
     };
-    if (loading) {
-        return (
-            <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center">
-                <div className="text-gray-500">Chargement du profil...</div>
-            </div>
-        );
-    }
+
+    if (loading) return <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center"><div className="text-gray-500">Chargement...</div></div>;
 
     return (
         <div className="min-h-screen bg-[#FAF7F2] py-8 px-4 sm:px-6 lg:px-8">
@@ -153,31 +82,15 @@ const Profile = () => {
                     <h1 className="text-3xl font-bold text-[#1e6b4f]">Mon Profil</h1>
                     <p className="text-gray-500 mt-1">Gérez vos informations personnelles</p>
                 </div>
-
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-1">
-                        <ProfileCard user={user} onPhotoUpdate={handlePhotoUpdate} />
+                        <ProfileCard user={user} onPhotoUpdate={setUser} />
                         <PasswordChange />
                     </div>
                     <div className="lg:col-span-2 space-y-6">
-                        <ProfileForm
-                            formData={formData}
-                            onChange={handleChange}
-                            onSubmit={handleSubmit}
-                            email={user?.email}
-                            saving={saving}
-                            error={error}
-                            success={success}
-                            onCancel={() => navigate(-1)}
-                        />
-                        <PortfolioSection
-                            images={portfolioImages}
-                            onAddImages={handleAddPortfolioImages}
-                            onRemoveImage={handleRemovePortfolioImage}
-                            uploading={uploadingImages}
-                        />
+                        <ProfileForm formData={formData} onChange={handleChange} onSubmit={handleSubmit} email={user?.email} saving={saving} error={error} success={success} onCancel={() => navigate(-1)} />
+                        <PortfolioSection images={portfolioImages} onAddImages={handleAddPortfolioImages} onRemoveImage={handleRemovePortfolioImage} uploading={uploadingImages} />
                     </div>
-
                 </div>
             </div>
         </div>

@@ -48,17 +48,12 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    /**
-     * Get the opportunites for the user.
-     */
+    
     public function opportunites()
     {
         return $this->hasMany(Opportunite::class);
     }
 
-    /**
-     * Get the portfolio images for the user.
-     */
     public function portfolio()
     {
         return $this->hasMany(PortfolioImage::class);

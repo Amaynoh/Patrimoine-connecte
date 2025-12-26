@@ -13,7 +13,6 @@ class OpportuniteSeeder extends Seeder
      */
     public function run(): void
     {
-        // Assurons-nous qu'il y a un utilisateur
         $user = User::first() ?? User::factory()->create();
 
         $opportunites = [

@@ -1,24 +1,35 @@
+import React from 'react';
 import fesImg from '../../assets/fes.webp';
 import marrakechImg from '../../assets/marakech.jpg';
 import aitbenImg from '../../assets/aitben.webp';
+const projetsData = [
+    {
+        id: 1,
+        titre: 'Restauration Dar El-Makhzen',
+        description: 'Restauration du palais historique de Fès avec des techniques traditionnelles et des artisans locaux.',
+        image: fesImg,
+        lieu: 'Fès',
+        statut: 'en_cours'
+    },
+    {
+        id: 2,
+        titre: 'Rénovation Médina Marrakech',
+        description: 'Projet de réhabilitation des riads traditionnels dans la médina de Marrakech.',
+        image: marrakechImg,
+        lieu: 'Marrakech',
+        statut: 'en_cours'
+    },
+    {
+        id: 3,
+        titre: 'Conservation Kasbah Aït Benhaddou',
+        description: "Programme de préservation de ce site classé patrimoine mondial de l'UNESCO.",
+        image: aitbenImg,
+        lieu: 'Ouarzazate',
+        statut: 'en_cours'
+    }
+];
 
-const ProjetsSection = ({ projets }) => {
-    const getImage = (projet) => {
-        const titleLower = projet.titre.toLowerCase();
-
-        if (titleLower.includes('fès') || titleLower.includes('dar el-makhzen')) {
-            return fesImg;
-        }
-        if (titleLower.includes('marrakech')) {
-            return marrakechImg;
-        }
-        if (titleLower.includes('aït benhaddou')) {
-            return aitbenImg;
-        }
-
-        return projet.image;
-    };
-
+const ProjetsSection = () => {
     return (
         <section className="py-10 md:py-20 bg-gray-50">
             <div className="max-w-6xl mx-auto px-4">
@@ -32,13 +43,13 @@ const ProjetsSection = ({ projets }) => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {projets.map((projet) => (
+                    {projetsData.map((projet) => (
                         <div
                             key={projet.id}
                             className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all overflow-hidden"
                         >
                             <img
-                                src={getImage(projet)}
+                                src={projet.image}
                                 alt={projet.titre}
                                 className="w-full h-48 object-cover"
                             />

@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 import OpportuniteFilter from '../components/opportunites/OpportuniteFilter';
 import OpportuniteCard from '../components/opportunites/OpportuniteCard';
 
-import { useSelector } from 'react-redux';
-
 const Opportunites = () => {
     const navigate = useNavigate();
-    const { user } = useSelector((state) => state.auth);
+    const { user } = useAuth();
     const [opportunites, setOpportunites] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -33,6 +32,7 @@ const Opportunites = () => {
 
         fetchOpportunites();
     }, []);
+
     const filteredOpportunites = opportunites.filter(opp => {
         return (
             (contractType === '' || opp.contract_type === contractType) &&

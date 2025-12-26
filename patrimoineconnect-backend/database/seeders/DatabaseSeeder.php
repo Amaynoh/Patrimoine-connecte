@@ -2,44 +2,56 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use App\Models\Opportunite;
+use App\Models\PortfolioImage;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
-    /**
-     * Insérer les données initiales dans la base de données
-     * 
-     * Cette méthode est appelée quand on exécute : php artisan db:seed
-     */
     public function run(): void
     {
-        // Créer un utilisateur pour rattacher les opportunités
-        \App\Models\User::factory()->create([
-            'name' => 'Admin User',
+        User::factory()->create([
+            'name' => 'Admin Patrimoine',
             'email' => 'admin@patrimoine.ma',
             'role' => 'architecte',
+            'city' => 'Rabat',
+            'specialty' => 'Gestion du patrimoine',
+            'bio' => 'Administrateur de la plateforme PatrimoineConnect.',
+            'photo' => 'https://ui-avatars.com/api/?name=Admin+Patrimoine&background=1e3a8a&color=fff&size=200',
         ]);
-
+        
+        User::factory(5)->architecte()->create();
+        User::factory(8)->artisan()->create();
+        User::factory(3)->entreprise()->create();
+        User::factory(4)->create();
+        
         $this->call([
-            EtapeSeeder::class,
-            ProjetSeeder::class,
             OpportuniteSeeder::class,
         ]);
         
-        // Autres utilisateurs
-        \App\Models\User::factory(10)->create();
-
-        $architectesEtEntreprises = \App\Models\User::whereIn('role', ['architecte', 'entreprise'])->get();
-        if ($architectesEtEntreprises->count() > 0) {
-            foreach (range(1, 10) as $index) {
-                \App\Models\Opportunite::factory()->create([
-                    'user_id' => $architectesEtEntreprises->random()->id,
+        $publisheurs = User::whereIn('role', ['architecte', 'entreprise'])->get();
+        if ($publisheurs->count() > 0) {
+            foreach (range(1, 8) as $index) {
+                Opportunite::factory()->create([
+                    'user_id' => $publisheurs->random()->id,
                 ]);
             }
         }
+
+        $usersWithPortfolio = User::whereIn('role', ['artisan', 'architecte'])->get();
+        foreach ($usersWithPortfolio as $user) {
+            $nbImages = fake()->numberBetween(2, 5);
+            for ($i = 0; $i < $nbImages; $i++) {
+                PortfolioImage::factory()->create([
+                    'user_id' => $user->id,
+                ]);
+            }
+        }
+
+        echo "\n✅ Base de données peuplée !\n";
+        echo "   - 21 utilisateurs avec photos\n";
+        echo "   - Portfolio images pour artisans/architectes\n";
+        echo "   - Opportunités créées\n\n";
     }
 }

@@ -6,9 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateOpportuniteRequest extends FormRequest
 {
-    /**
-     * Détermine si l'utilisateur est autorisé à faire cette requête.
-     */
     public function authorize(): bool
     {
         $opportunite = $this->route('opportunite');
@@ -16,9 +13,6 @@ class UpdateOpportuniteRequest extends FormRequest
         return $opportunite && $opportunite->user_id === $this->user()->id;
     }
 
-    /**
-     * Règles de validation pour la mise à jour d'opportunité.
-     */
     public function rules(): array
     {
         return [
@@ -30,9 +24,6 @@ class UpdateOpportuniteRequest extends FormRequest
         ];
     }
 
-    /**
-     * Messages d'erreur personnalisés.
-     */
     public function messages(): array
     {
         return [
@@ -45,9 +36,6 @@ class UpdateOpportuniteRequest extends FormRequest
         ];
     }
 
-    /**
-     * Message d'erreur d'autorisation personnalisé.
-     */
     public function failedAuthorization()
     {
         abort(403, 'Vous n\'êtes pas autorisé à modifier cette opportunité');

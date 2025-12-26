@@ -6,18 +6,13 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreOpportuniteRequest extends FormRequest
 {
-    /**
-     * Détermine si l'utilisateur est autorisé à faire cette requête.
-     */
+    
     public function authorize(): bool
     {
-        // Vérifier que l'utilisateur est architecte, entreprise ou admin
         return in_array($this->user()->role, ['architecte', 'entreprise', 'admin']);
     }
 
-    /**
-     * Règles de validation pour la création d'opportunité.
-     */
+    
     public function rules(): array
     {
         return [
@@ -32,9 +27,6 @@ class StoreOpportuniteRequest extends FormRequest
         ];
     }
 
-    /**
-     * Messages d'erreur personnalisés.
-     */
     public function messages(): array
     {
         return [
@@ -48,10 +40,6 @@ class StoreOpportuniteRequest extends FormRequest
         ];
     }
 
-    /**
-     * Message d'erreur d'autorisation personnalisé.
-     * Cette méthode est appelée automatiquement si authorize() retourne false.
-     */
     protected function failedAuthorization(): void
     {
         abort(403, 'Seuls les architectes, entreprises et admins peuvent créer des opportunités');

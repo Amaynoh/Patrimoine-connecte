@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { loginSuccess } from "../features/auth/authSlice";
+import { useAuth } from "../context/AuthContext";
 import api from "../api/axios";
-import logo from "../assets/logo.png";
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");
@@ -12,7 +10,7 @@ const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const dispatch = useDispatch();
+    const { login } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const successMessage = location.state?.message;
@@ -24,13 +22,7 @@ const LoginPage = () => {
 
         try {
             const response = await api.post('/login', { email, password });
-            sessionStorage.setItem('token', response.data.token);
-            sessionStorage.setItem('user', JSON.stringify(response.data.user));
-            dispatch(loginSuccess({
-                user: response.data.user,
-                token: response.data.token
-            }));
-
+            login(response.data.user, response.data.token);
             navigate("/opportunites");
         } catch (err) {
             setError(err.response?.data?.message || "Identifiants incorrects");
@@ -38,6 +30,7 @@ const LoginPage = () => {
             setLoading(false);
         }
     };
+
     return (
         <div className="w-full flex-grow flex justify-center items-center px-4 py-4">
             <div className="w-full max-w-[450px] bg-white rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.08)] p-6 border border-gray-100">
@@ -56,7 +49,6 @@ const LoginPage = () => {
                     </div>
                 )}
 
-                {/* Form */}
                 <form onSubmit={handleSubmit} className="space-y-3">
                     <div className="space-y-0.5">
                         <label className="text-[10px] uppercase font-bold text-gray-500 block">Email</label>
@@ -109,4 +101,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-

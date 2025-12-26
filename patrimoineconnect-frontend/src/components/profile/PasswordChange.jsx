@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
-import InputField from '../ui/InputField';
-import Button from '../ui/Button';
 
-/**
- * Composant PasswordChange - Section changement de mot de passe
- */
 const PasswordChange = () => {
     const [passwords, setPasswords] = useState({
         currentPassword: '',
@@ -25,7 +20,6 @@ const PasswordChange = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // Validation simple
         if (passwords.newPassword !== passwords.confirmPassword) {
             setError('Les mots de passe ne correspondent pas');
             return;
@@ -36,7 +30,6 @@ const PasswordChange = () => {
             return;
         }
 
-        // TODO: Appel API pour changer le mot de passe
         setSuccess('Mot de passe modifié avec succès !');
         setPasswords({ currentPassword: '', newPassword: '', confirmPassword: '' });
     };
@@ -48,37 +41,55 @@ const PasswordChange = () => {
             </h3>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-                <InputField
-                    label="Mot de passe actuel"
-                    name="currentPassword"
-                    type="password"
-                    value={passwords.currentPassword}
-                    onChange={handleChange}
-                    required
-                />
-                <InputField
-                    label="Nouveau mot de passe"
-                    name="newPassword"
-                    type="password"
-                    value={passwords.newPassword}
-                    onChange={handleChange}
-                    required
-                />
-                <InputField
-                    label="Confirmer le mot de passe"
-                    name="confirmPassword"
-                    type="password"
-                    value={passwords.confirmPassword}
-                    onChange={handleChange}
-                    required
-                />
+                <div className="space-y-1">
+                    <label className="block text-sm font-medium text-gray-700">
+                        Mot de passe actuel <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="password"
+                        name="currentPassword"
+                        value={passwords.currentPassword}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4A373]/30 focus:border-[#D4A373] transition-all text-sm bg-white"
+                    />
+                </div>
+                <div className="space-y-1">
+                    <label className="block text-sm font-medium text-gray-700">
+                        Nouveau mot de passe <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="password"
+                        name="newPassword"
+                        value={passwords.newPassword}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4A373]/30 focus:border-[#D4A373] transition-all text-sm bg-white"
+                    />
+                </div>
+                <div className="space-y-1">
+                    <label className="block text-sm font-medium text-gray-700">
+                        Confirmer le mot de passe <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="password"
+                        name="confirmPassword"
+                        value={passwords.confirmPassword}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4A373]/30 focus:border-[#D4A373] transition-all text-sm bg-white"
+                    />
+                </div>
 
                 {error && <p className="text-red-500 text-sm">{error}</p>}
                 {success && <p className="text-green-600 text-sm">{success}</p>}
 
-                <Button type="submit" variant="warning" className="w-full">
+                <button
+                    type="submit"
+                    className="w-full px-6 py-2.5 rounded-lg font-semibold text-sm transition-all bg-[#D4A373] hover:bg-[#c4935f] text-white"
+                >
                     Mettre à jour
-                </Button>
+                </button>
             </form>
         </div>
     );

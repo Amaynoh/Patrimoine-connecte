@@ -1,8 +1,3 @@
-import InputField from '../ui/InputField';
-import TextArea from '../ui/TextArea';
-import SelectField from '../ui/SelectField';
-import Button from '../ui/Button';
-
 const ProfileForm = ({ formData, onChange, onSubmit, email, saving, error, success, onCancel }) => {
 
     const cityOptions = [
@@ -35,59 +30,97 @@ const ProfileForm = ({ formData, onChange, onSubmit, email, saving, error, succe
 
             <form onSubmit={onSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <InputField
-                        label="Nom complet"
-                        name="name"
-                        value={formData.name}
-                        onChange={onChange}
-                        placeholder="Votre nom"
-                        required
-                    />
-                    <SelectField
-                        label="Ville"
-                        name="city"
-                        value={formData.city}
-                        onChange={onChange}
-                        options={cityOptions}
-                        required
-                    />
+                    <div className="space-y-1">
+                        <label className="block text-sm font-medium text-gray-700">
+                            Nom complet <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            onChange={onChange}
+                            placeholder="Votre nom"
+                            required
+                            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4A373]/30 focus:border-[#D4A373] transition-all text-sm bg-white"
+                        />
+                    </div>
+
+                    <div className="space-y-1">
+                        <label className="block text-sm font-medium text-gray-700">
+                            Ville <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                            name="city"
+                            value={formData.city}
+                            onChange={onChange}
+                            required
+                            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4A373]/30 focus:border-[#D4A373] bg-white transition-all text-sm cursor-pointer"
+                        >
+                            <option value="">Sélectionner...</option>
+                            {cityOptions.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <SelectField
-                        label="Spécialité"
-                        name="specialty"
-                        value={formData.specialty}
+                      <div className="space-y-1">
+                        <label className="block text-sm font-medium text-gray-700">
+                            Spécialité
+                        </label>
+                        <select
+                            name="specialty"
+                            value={formData.specialty}
+                            onChange={onChange}
+                            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4A373]/30 focus:border-[#D4A373] bg-white transition-all text-sm cursor-pointer"
+                        >
+                            <option value="">Sélectionner...</option>
+                            {specialtyOptions.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="space-y-1">
+                        <label className="block text-sm font-medium text-gray-700">
+                            Téléphone
+                        </label>
+                        <input
+                            type="tel"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={onChange}
+                            placeholder="+212 6 12 34 56 78"
+                            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4A373]/30 focus:border-[#D4A373] transition-all text-sm bg-white"
+                        />
+                    </div>
+                </div>
+
+                <div className="space-y-1">
+                    <label className="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" name="email" value={email || ''} onChange={() => { }} disabled className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4A373]/30 focus:border-[#D4A373] transition-all text-sm bg-gray-100 cursor-not-allowed"/>
+                </div>
+                <p className="text-xs text-gray-400 -mt-4">Pour modifier votre email, contactez le support</p>
+
+                <div className="space-y-1">
+                    <label className="block text-sm font-medium text-gray-700">
+                        Biographie
+                    </label>
+                    <textarea
+                        name="bio"
+                        value={formData.bio}
                         onChange={onChange}
-                        options={specialtyOptions}
-                    />
-                    <InputField
-                        label="Téléphone"
-                        name="phone"
-                        type="tel"
-                        value={formData.phone}
-                        onChange={onChange}
-                        placeholder="+212 6 12 34 56 78"
+                        placeholder="Décrivez votre parcours et vos compétences..."
+                        rows={5}
+                        className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4A373]/30 focus:border-[#D4A373] transition-all text-sm resize-none bg-white"
                     />
                 </div>
-                <InputField
-                    label="Email"
-                    name="email"
-                    type="email"
-                    value={email || ''}
-                    onChange={() => { }}
-                    disabled
-                />
-                <p className="text-xs text-gray-400 -mt-4">
-                    Pour modifier votre email, contactez le support
-                </p>
-                <TextArea
-                    label="Biographie"
-                    name="bio"
-                    value={formData.bio}
-                    onChange={onChange}
-                    placeholder="Décrivez votre parcours et vos compétences..."
-                    rows={5}
-                />
+
                 {error && (
                     <div className="p-3 bg-red-50 text-red-600 rounded-lg text-sm">
                         {error}
@@ -98,13 +131,23 @@ const ProfileForm = ({ formData, onChange, onSubmit, email, saving, error, succe
                         {success}
                     </div>
                 )}
+
                 <div className="flex justify-end gap-4 pt-4 border-t border-gray-100">
-                    <Button type="button" variant="secondary" onClick={onCancel}>
+                    <button
+                        type="button"
+                        onClick={onCancel}
+                        className="px-6 py-2.5 rounded-lg font-semibold text-sm transition-all bg-gray-100 hover:bg-gray-200 text-gray-700"
+                    >
                         Annuler
-                    </Button>
-                    <Button type="submit" variant="primary" disabled={saving}>
+                    </button>
+
+                    <button
+                        type="submit"
+                        disabled={saving}
+                        className={`px-6 py-2.5 rounded-lg font-semibold text-sm transition-all bg-[#1e6b4f] hover:bg-[#155a42] text-white ${saving ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
                         {saving ? 'Enregistrement...' : '💾 Enregistrer les modifications'}
-                    </Button>
+                    </button>
                 </div>
             </form>
         </div>

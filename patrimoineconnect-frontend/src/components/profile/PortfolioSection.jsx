@@ -1,5 +1,4 @@
 import { useRef } from 'react';
-import Button from '../ui/Button';
 
 const PortfolioSection = ({ images, onAddImages, onRemoveImage, uploading }) => {
     const fileInputRef = useRef(null);
@@ -19,7 +18,6 @@ const PortfolioSection = ({ images, onAddImages, onRemoveImage, uploading }) => 
             name: file.name
         }));
         onAddImages(newImages);
-        // Reset input so same file can be selected again
         e.target.value = '';
     };
 
@@ -29,14 +27,15 @@ const PortfolioSection = ({ images, onAddImages, onRemoveImage, uploading }) => 
                 <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                     🖼️ Mon Portfolio
                 </h2>
-                <Button
-                    variant="primary"
-                    className="text-sm"
+
+                <button
                     onClick={handleAddClick}
                     disabled={uploading}
+                    className={`px-6 py-2.5 rounded-lg font-semibold text-sm transition-all bg-[#1e6b4f] hover:bg-[#155a42] text-white ${uploading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                     {uploading ? '⏳ Upload en cours...' : '+ Ajouter des images'}
-                </Button>
+                </button>
+
                 <input
                     type="file"
                     ref={fileInputRef}
@@ -47,7 +46,6 @@ const PortfolioSection = ({ images, onAddImages, onRemoveImage, uploading }) => 
                 />
             </div>
 
-            {/* Indicateur de chargement pendant l'upload */}
             {uploading && (
                 <div className="mb-4 p-3 bg-blue-50 text-blue-600 rounded-lg text-sm flex items-center gap-2">
                     <div className="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
@@ -71,6 +69,7 @@ const PortfolioSection = ({ images, onAddImages, onRemoveImage, uploading }) => 
                         </button>
                     </div>
                 ))}
+
                 <div
                     onClick={handleAddClick}
                     className={`aspect-square bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 border-2 border-dashed border-gray-200 hover:border-[#D4A373] transition-colors ${uploading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
@@ -92,4 +91,3 @@ const PortfolioSection = ({ images, onAddImages, onRemoveImage, uploading }) => 
 };
 
 export default PortfolioSection;
-

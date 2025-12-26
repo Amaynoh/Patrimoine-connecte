@@ -13,19 +13,13 @@ use App\Events\OpportuniteCreee;
 
 class OpportuniteController extends Controller
 {
-    /**
-     * Afficher toutes les opportunités avec filtres
-     */
+   
     public function index(Request $request)
     {
         $query = Opportunite::with('user:id,name,role');
-
-        // Filtre par contract_type
         if ($request->has('contract_type')) {
             $query->where('contract_type', $request->contract_type);
         }
-
-        // Filtre par lieu
         if ($request->has('location')) {
             $query->where('location', 'like', '%' . $request->location . '%');
         }
@@ -34,13 +28,6 @@ class OpportuniteController extends Controller
 
         return response()->json($opportunites);
     }
-
-    /**
-     * Créer une nouvelle opportunité
-     * 
-     * SÉCURITÉ : La vérification du rôle (architecte/entreprise/admin) 
-     * est faite dans StoreOpportuniteRequest->authorize()
-     */
     public function store(StoreOpportuniteRequest $request)
     {
 
@@ -56,9 +43,6 @@ class OpportuniteController extends Controller
         ]);
 
         $opportunite->load('user:id,name,role');
-
-        // DÉCLENCHER L'ÉVÉNEMENT : Notifier qu'une opportunité a été créée
-        // Cela va automatiquement appeler EnvoyerNotificationAdmin->handle()
         event(new OpportuniteCreee($opportunite));
 
         return response()->json([
@@ -66,20 +50,12 @@ class OpportuniteController extends Controller
             'message' => 'Opportunité créée avec succès'
         ], 201);
     }
-
-    /**
-     * Afficher une opportunité spécifique
-     */
     public function show($id)
     {
         $opportunite = Opportunite::with('user:id,name,role,city,phone')->findOrFail($id);
 
         return response()->json($opportunite);
     }
-
-    /**
-     * Modifier une opportunité
-     */
     public function update(UpdateOpportuniteRequest $request, Opportunite $opportunite)
     {
 
@@ -93,12 +69,8 @@ class OpportuniteController extends Controller
         ]);
     }
 
-    /**
-     * Supprimer une opportunité
-     */
     public function destroy(Opportunite $opportunite)
     {
-        // Vérifier que l'utilisateur est le propriétaire
         if ($opportunite->user_id !== request()->user()->id) {
             return response()->json([
                 'message' => 'Vous n\'êtes pas autorisé à supprimer cette opportunité'
@@ -111,10 +83,6 @@ class OpportuniteController extends Controller
             'message' => 'Opportunité supprimée avec succès'
         ]);
     }
-
-    /**
-     * Récupérer les opportunités de l'utilisateur connecté (pour le Dashboard)
-     */
     public function myOpportunities(Request $request)
     {
         $opportunites = $request->user()

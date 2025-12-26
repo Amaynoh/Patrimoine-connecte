@@ -13,7 +13,6 @@ const StatsCard = ({ icon, value, label, bgColor = 'bg-[#C17A56]/10', iconColor 
     );
 };
 
-
 const StatsGrid = ({ stats }) => {
     return (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

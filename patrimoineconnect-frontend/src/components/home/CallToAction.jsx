@@ -1,20 +1,15 @@
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useAuth } from "../../context/AuthContext";
 
 const CallToAction = () => {
     const navigate = useNavigate();
-
-    // Vérifier si l'utilisateur est connecté
-    const { user } = useSelector((state) => state.auth);
+    const { user } = useAuth();
     const isAuthenticated = !!user;
 
-    // Gérer le clic sur "Découvrir l'annuaire"
     const handleAnnuaireClick = () => {
         if (isAuthenticated) {
-            // Si connecté, aller vers l'annuaire
             navigate('/annuaire');
         } else {
-            // Si non connecté, rediriger vers inscription
             navigate('/register');
         }
     };

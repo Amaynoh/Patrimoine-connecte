@@ -6,18 +6,11 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequest extends FormRequest
 {
-    /**
-     * Détermine si l'utilisateur est autorisé à faire cette requête.
-     */
     public function authorize(): bool
     {
-        // Tout le monde peut s'inscrire
         return true;
     }
 
-    /**
-     * Règles de validation pour l'inscription.
-     */
     public function rules(): array
     {
         return [
@@ -30,9 +23,6 @@ class RegisterRequest extends FormRequest
         ];
     }
 
-    /**
-     * Messages d'erreur personnalisés.
-     */
     public function messages(): array
     {
         return [

@@ -8,10 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Opportunite extends Model
 {
     use HasFactory;
-
-    /**
-     * The attributes that are mass assignable.
-     */
     protected $fillable = [
         'user_id',
         'title',
@@ -38,9 +34,6 @@ class Opportunite extends Model
         'deadline' => 'date',
     ];
 
-    /**
-     * Get the user that owns the opportunite.
-     */
     public function user()
     {
         return $this->belongsTo(User::class);

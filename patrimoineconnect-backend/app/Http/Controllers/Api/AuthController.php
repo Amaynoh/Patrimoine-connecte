@@ -12,9 +12,7 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    /**
-     * Inscription d'un nouvel utilisateur
-     */
+    
     public function register(RegisterRequest $request)
     {
 
@@ -35,10 +33,6 @@ class AuthController extends Controller
             'message' => 'Inscription réussie'
         ], 201);
     }
-
-    /**
-     * Connexion d'un utilisateur
-     */
     public function login(LoginRequest $request)
     {
 
@@ -58,10 +52,6 @@ class AuthController extends Controller
             'message' => 'Connexion réussie'
         ]);
     }
-
-    /**
-     * Déconnexion de l'utilisateur
-     */
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
@@ -70,12 +60,5 @@ class AuthController extends Controller
             'message' => 'Déconnexion réussie'
         ]);
     }
-
-    /**
-     * Récupérer l'utilisateur authentifié
-     */
-    public function me(Request $request)
-    {
-        return response()->json($request->user());
-    }
 }
+

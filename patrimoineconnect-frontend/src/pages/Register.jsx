@@ -55,21 +55,17 @@ const Register = () => {
             <main className="flex-grow flex justify-center items-center px-4 py-4 overflow-auto">
                 <div className="w-full max-w-[500px] bg-white rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.08)] p-6 border border-gray-100">
 
-                    {/* Header */}
                     <div className="text-center mb-2">
                         <h1 className="text-lg font-bold text-slate-900">Créer un compte</h1>
                     </div>
 
-                    {/* Error Message */}
                     {error && (
                         <div className="mb-2 p-2 rounded bg-rose-50 text-rose-600 text-xs flex items-center border border-rose-100">
                             <span className="mr-1">⚠️</span> {error}
                         </div>
                     )}
 
-                    {/* Form */}
                     <form onSubmit={handleSubmit} className="space-y-2">
-                        {/* Nom */}
                         <div className="space-y-0.5">
                             <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">Nom complet</label>
                             <input
@@ -82,19 +78,9 @@ const Register = () => {
                                 required
                             />
                         </div>
-
-                        {/* Email */}
                         <div className="space-y-0.5">
                             <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">Email</label>
-                            <input
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                className="w-full px-3 py-1.5 bg-[#f0edeb] rounded border-transparent focus:border-[#8B5A2B] focus:bg-white focus:ring-0 outline-none text-gray-800 text-sm"
-                                placeholder="nom@exemple.com"
-                                required
-                            />
+                            <input type="email" name="email" value={formData.email}onChange={handleChange} className="w-full px-3 py-1.5 bg-[#f0edeb] rounded border-transparent focus:border-[#8B5A2B] focus:bg-white focus:ring-0 outline-none text-gray-800 text-sm" placeholder="nom@exemple.com" required/>
                         </div>
 
                         {/* Role */}

@@ -40,14 +40,8 @@ class LogNouvelleOpportunite implements ShouldQueue
         $this->opportunite = $opportunite;
     }
 
-    /**
-     * Exécution du Job.
-     * C'est ici que tu mettrais le vrai code d'envoi d'email.
-     */
     public function handle(): void
     {
-        // Pour l'instant, on simule l'email en écrivant dans le fichier de log
-        // Tu peux voir les logs dans : storage/logs/laravel.log
         Log::info('📧 [NOTIFICATION ADMIN] Nouvelle opportunité créée !', [
             'titre' => $this->opportunite->title,
             'auteur_id' => $this->opportunite->user_id,

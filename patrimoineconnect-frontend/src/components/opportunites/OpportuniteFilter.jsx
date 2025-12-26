@@ -5,7 +5,6 @@ const OpportuniteFilter = ({ contractType, setContractType, location, setLocatio
         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 lg:sticky lg:top-24">
             <h2 className="text-lg font-semibold text-gray-800 mb-6">Filtres de recherche</h2>
 
-            {/* Recherche par mot clé (visuel) */}
             <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-600 mb-2">Mots-clés</label>
                 <div className="relative">
@@ -22,7 +21,6 @@ const OpportuniteFilter = ({ contractType, setContractType, location, setLocatio
                 </div>
             </div>
 
-            {/* Type de contrat */}
             <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-600 mb-2">Type de contrat</label>
                 <select
@@ -37,8 +35,6 @@ const OpportuniteFilter = ({ contractType, setContractType, location, setLocatio
                     <option value="Bénévolat">Bénévolat</option>
                 </select>
             </div>
-
-            {/* Ville */}
             <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-600 mb-2">Ville</label>
                 <select

@@ -5,20 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PortfolioImage extends Model
+class Candidature extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'user_id',
-        'image_path',
-        'title',
-    ];
+    protected $fillable = ['opportunite_id', 'user_id', 'message', 'status'];
+
+    public function opportunite()
+    {
+        return $this->belongsTo(Opportunite::class);
+    }
 
     public function user()
     {
