@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
 import WelcomeHeader from '../components/dashboard/WelcomeHeader';
@@ -16,6 +16,11 @@ const Dashboard = () => {
     const [myOpportunites, setMyOpportunites] = useState([]);
     const [loading, setLoading] = useState(true);
     const [deleting, setDeleting] = useState(null);
+
+    // Rediriger les admins vers leur panel
+    if (user?.role === 'admin') {
+        return <Navigate to="/admin" replace />;
+    }
 
     const canPublish = user?.role === 'architecte' || user?.role === 'entreprise';
     const isCandidat = user?.role === 'artisan' || user?.role === 'laureat' || user?.role === 'restaurateur';

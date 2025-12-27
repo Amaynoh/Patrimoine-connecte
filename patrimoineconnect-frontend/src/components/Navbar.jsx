@@ -11,6 +11,7 @@ const Navbar = () => {
     const allowedRoles = ['architecte', 'entreprise', 'admin'];
     const userRole = user?.role || user?.user_type || '';
     const canCreate = allowedRoles.includes(userRole);
+    const isAdmin = userRole === 'admin';
 
     const handleLogout = () => {
         logout();
@@ -45,18 +46,28 @@ const Navbar = () => {
 
                     {isAuthenticated ? (
                         <>
-                            <Link
-                                to="/dashboard"
-                                className="text-sm font-semibold text-gray-600 hover:text-[#78350f] transition-colors"
-                            >
-                                Dashboard
-                            </Link>
+                            {!isAdmin && (
+                                <Link
+                                    to="/dashboard"
+                                    className="text-sm font-semibold text-gray-600 hover:text-[#78350f] transition-colors"
+                                >
+                                    Dashboard
+                                </Link>
+                            )}
                             <Link
                                 to="/profile"
                                 className="text-sm font-semibold text-gray-600 hover:text-[#78350f] transition-colors"
                             >
                                 👤 {user?.name || "Mon Profil"}
                             </Link>
+                            {isAdmin && (
+                                <Link
+                                    to="/admin"
+                                    className="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors"
+                                >
+                                    🛡️ Admin
+                                </Link>
+                            )}
                             <button
                                 onClick={handleLogout}
                                 className="bg-gray-100 text-gray-700 px-4 py-2 rounded-xl text-sm font-bold hover:bg-gray-200 transition-colors"
@@ -121,13 +132,15 @@ const Navbar = () => {
 
                     {isAuthenticated ? (
                         <>
-                            <Link
-                                to="/dashboard"
-                                onClick={() => setIsOpen(false)}
-                                className="block text-gray-700 font-semibold"
-                            >
-                                🏠 Dashboard
-                            </Link>
+                            {!isAdmin && (
+                                <Link
+                                    to="/dashboard"
+                                    onClick={() => setIsOpen(false)}
+                                    className="block text-gray-700 font-semibold"
+                                >
+                                    🏠 Dashboard
+                                </Link>
+                            )}
                             <Link
                                 to="/profile"
                                 onClick={() => setIsOpen(false)}
@@ -135,6 +148,15 @@ const Navbar = () => {
                             >
                                 👤 Mon Profil
                             </Link>
+                            {isAdmin && (
+                                <Link
+                                    to="/admin"
+                                    onClick={() => setIsOpen(false)}
+                                    className="block text-red-600 font-semibold"
+                                >
+                                    🛡️ Administration
+                                </Link>
+                            )}
                             {canCreate && (
                                 <Link
                                     to="/opportunites/create"

@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 
 import Opportunites from "./pages/Opportunites";
 import CreateOpportunite from "./pages/CreateOpportunite";
@@ -63,6 +64,14 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/profil/:id" element={<ProfilPublic />} />
 
         </Routes>
@@ -73,4 +82,5 @@ function App() {
 }
 
 export default App;
+
 

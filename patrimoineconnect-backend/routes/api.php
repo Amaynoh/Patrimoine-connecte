@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\OpportuniteController;
+use App\Http\Controllers\Api\AdminController;
+use App\Http\Controllers\Api\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +30,9 @@ Route::get('/opportunites/{id}', [OpportuniteController::class, 'show']);
 // Annuaire public
 Route::get('/users', [UserController::class, 'index']);
 Route::get('/users/{id}', [UserController::class, 'show']);
+
+// Catégories publiques (pour les filtres)
+Route::get('/categories', [CategoryController::class, 'index']);
 
 // Routes protégées (nécessitent authentification)
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -59,4 +64,26 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/candidatures/{id}/accepter', [\App\Http\Controllers\Api\CandidatureController::class, 'accepter']);
     Route::put('/candidatures/{id}/refuser', [\App\Http\Controllers\Api\CandidatureController::class, 'refuser']);
     Route::delete('/candidatures/{id}', [\App\Http\Controllers\Api\CandidatureController::class, 'annuler']);
+});
+
+// Routes Admin (protégées par middleware admin)
+Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
+    // Statistiques
+    Route::get('/stats', [AdminController::class, 'stats']);
+    
+    // Gestion des utilisateurs
+    Route::get('/users', [AdminController::class, 'users']);
+    Route::delete('/users/{id}', [AdminController::class, 'deleteUser']);
+    
+    // Gestion des opportunités
+    Route::get('/opportunites', [AdminController::class, 'opportunites']);
+    Route::delete('/opportunites/{id}', [AdminController::class, 'deleteOpportunite']);
+    
+    // Gestion des candidatures
+    Route::get('/candidatures', [AdminController::class, 'candidatures']);
+    
+    // CRUD Catégories (admin only pour création/modification/suppression)
+    Route::post('/categories', [CategoryController::class, 'store']);
+    Route::put('/categories/{id}', [CategoryController::class, 'update']);
+    Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
 });
