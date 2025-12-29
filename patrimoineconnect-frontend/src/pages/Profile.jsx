@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../api/axios';
+import { useProfile } from '../context/ProfileContext';
 import ProfileCard from '../components/profile/ProfileCard';
 import PasswordChange from '../components/profile/PasswordChange';
 import ProfileForm from '../components/profile/ProfileForm';
@@ -8,6 +8,8 @@ import PortfolioSection from '../components/profile/PortfolioSection';
 
 const Profile = () => {
     const navigate = useNavigate();
+    const { fetchProfile, updateProfile, fetchPortfolio, addPortfolioImage, deletePortfolioImage } = useProfile();
+
     const [user, setUser] = useState(null);
     const [formData, setFormData] = useState({ name: '', city: '', specialty: '', phone: '', bio: '' });
     const [loading, setLoading] = useState(true);
@@ -19,18 +21,17 @@ const Profile = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const res = await api.get('/profile');
-                const u = res.data;
+            const profileResult = await fetchProfile();
+            if (profileResult.data) {
+                const u = profileResult.data;
                 setUser(u);
                 setFormData({ name: u.name || '', city: u.city || '', specialty: u.specialty || '', phone: u.phone || '', bio: u.bio || '' });
-            } catch { setError('Impossible de charger le profil'); }
+            } else {
+                setError(profileResult.error);
+            }
             setLoading(false);
-
-            try {
-                const res = await api.get('/profile/portfolio');
-                setPortfolioImages(res.data.map(img => ({ id: img.id, preview: img.url, name: img.title || 'Image' })));
-            } catch { }
+            const images = await fetchPortfolio();
+            setPortfolioImages(images);
         };
         fetchData();
     }, []);
@@ -43,34 +44,37 @@ const Profile = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSaving(true); setError(''); setSuccess('');
-        try {
-            const res = await api.put('/profile', formData);
-            setUser(res.data.user);
+
+        const result = await updateProfile(formData);
+        if (result.data) {
+            setUser(result.data);
             setSuccess('Profil mis à jour !');
-        } catch (err) {
-            setError(err.response?.status === 422 ? Object.values(err.response.data.errors).flat().join(', ') : 'Erreur');
-        } finally { setSaving(false); }
+        } else {
+            setError(result.error);
+        }
+        setSaving(false);
     };
 
     const handleAddPortfolioImages = async (newFiles) => {
         setUploadingImages(true);
         for (const f of newFiles) {
-            try {
-                const fd = new FormData();
-                fd.append('image', f.file);
-                fd.append('title', f.name);
-                const res = await api.post('/profile/portfolio', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
-                setPortfolioImages(prev => [...prev, { id: res.data.image.id, preview: res.data.image.url, name: res.data.image.title || 'Image' }]);
-            } catch { setError('Erreur upload'); }
+            const result = await addPortfolioImage(f.file, f.name);
+            if (result.data) {
+                setPortfolioImages(prev => [...prev, result.data]);
+            } else {
+                setError(result.error);
+            }
         }
         setUploadingImages(false);
     };
 
     const handleRemovePortfolioImage = async (id) => {
-        try {
-            await api.delete(`/profile/portfolio/${id}`);
+        const result = await deletePortfolioImage(id);
+        if (result.success) {
             setPortfolioImages(prev => prev.filter(img => img.id !== id));
-        } catch { setError('Erreur suppression'); }
+        } else {
+            setError(result.error);
+        }
     };
 
     if (loading) return <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center"><div className="text-gray-500">Chargement...</div></div>;

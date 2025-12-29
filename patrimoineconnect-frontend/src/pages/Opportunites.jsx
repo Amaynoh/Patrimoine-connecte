@@ -1,35 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { useOpportunites } from '../context/OpportunitesContext';
 import OpportuniteFilter from '../components/opportunites/OpportuniteFilter';
 import OpportuniteCard from '../components/opportunites/OpportuniteCard';
 
 const Opportunites = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
-    const [opportunites, setOpportunites] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const { opportunites, loading, error, fetchOpportunites } = useOpportunites();
+
     const allowedRoles = ['architecte', 'entreprise', 'admin'];
     const userRole = user?.role || user?.user_type || '';
     const canCreate = allowedRoles.includes(userRole);
     const [contractType, setContractType] = useState('');
     const [location, setLocation] = useState('');
-
     useEffect(() => {
-        const fetchOpportunites = async () => {
-            try {
-                const response = await axios.get('http://127.0.0.1:8000/api/opportunites');
-                setOpportunites(response.data);
-                setLoading(false);
-            } catch (err) {
-                console.error("Erreur lors du chargement des opportunités", err);
-                setError("Impossible de charger les opportunités.");
-                setLoading(false);
-            }
-        };
-
         fetchOpportunites();
     }, []);
 
@@ -87,7 +73,6 @@ const Opportunites = () => {
                         )}
                     </div>
                 </div>
-
             </div>
         </div>
     );

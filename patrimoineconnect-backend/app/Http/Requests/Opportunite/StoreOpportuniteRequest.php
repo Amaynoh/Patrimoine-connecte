@@ -3,16 +3,16 @@
 namespace App\Http\Requests\Opportunite;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\Opportunite;
 
 class StoreOpportuniteRequest extends FormRequest
 {
-    
+
     public function authorize(): bool
     {
-        return in_array($this->user()->role, ['architecte', 'entreprise', 'admin']);
+        return $this->user()->can('create', Opportunite::class);
     }
 
-    
     public function rules(): array
     {
         return [

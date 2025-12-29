@@ -82,8 +82,6 @@ const Register = () => {
                             <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">Email</label>
                             <input type="email" name="email" value={formData.email}onChange={handleChange} className="w-full px-3 py-1.5 bg-[#f0edeb] rounded border-transparent focus:border-[#8B5A2B] focus:bg-white focus:ring-0 outline-none text-gray-800 text-sm" placeholder="nom@exemple.com" required/>
                         </div>
-
-                        {/* Role */}
                         <div className="space-y-0.5">
                             <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">Type de compte</label>
                             <select
@@ -96,7 +94,6 @@ const Register = () => {
                             </select>
                         </div>
 
-                        {/* Password */}
                         <div className="space-y-0.5">
                             <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">Mot de passe</label>
                             <div className="relative">
@@ -119,7 +116,6 @@ const Register = () => {
                             </div>
                         </div>
 
-                        {/* Password confirmation */}
                         <div className="space-y-0.5">
                             <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">Confirmer</label>
                             <input

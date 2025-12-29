@@ -1,24 +1,12 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useUsers } from '../context/UsersContext';
 import SearchBar from '../components/annuaire/SearchBar';
 import UserCard from '../components/annuaire/UserCard';
+
 const Annuaire = () => {
-    const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const { users, loading, error, fetchUsers } = useUsers();
     const [searchTerm, setSearchTerm] = useState('');
     useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const response = await axios.get('http://127.0.0.1:8000/api/users');
-                setUsers(response.data);
-                setLoading(false);
-            } catch (err) {
-                console.error("Erreur lors du chargement", err);
-                setError("Impossible de charger l'annuaire.");
-                setLoading(false);
-            }
-        };
         fetchUsers();
     }, []);
     const filteredUsers = users.filter(user => {
@@ -46,8 +34,6 @@ const Annuaire = () => {
     return (
         <div className="min-h-screen bg-[#FAF7F2] py-10 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
-
-                {/* En-tête */}
                 <div className="text-center mb-10">
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">
                         Annuaire des Professionnels
@@ -80,7 +66,6 @@ const Annuaire = () => {
                         </button>
                     </div>
                 )}
-
             </div>
         </div>
     );

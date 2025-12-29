@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../api/axios';
+import { useOpportunites } from '../context/OpportunitesContext';  
 import OpportuniteForm from '../components/opportunites/OpportuniteForm';
 
 const CreateOpportunite = () => {
     const navigate = useNavigate();
+    const { createOpportunite } = useOpportunites();
+
     const [formData, setFormData] = useState({
         title: '', type: 'emploi', contract_type: 'CDI', location: '', description: '', missions: '', competences: '', budget: '', deadline: ''
     });
@@ -16,20 +18,11 @@ const CreateOpportunite = () => {
         setLoading(true);
         setError(null);
 
-        try {
-            const missionsArray = formData.missions ? formData.missions.split('\n').filter(i => i.trim()) : [];
-            const competencesArray = formData.competences ? formData.competences.split('\n').filter(i => i.trim()) : [];
-
-            await api.post('/opportunites', { ...formData, missions: missionsArray, competences: competencesArray });
+        const result = await createOpportunite(formData);
+        if (result.success) {
             navigate('/opportunites');
-        } catch (err) {
-            if (err.response?.status === 422) {
-                setError(`Données invalides : ${Object.values(err.response.data.errors).flat().join(', ')}`);
-            } else if (err.response?.status === 403) {
-                setError("Réservé aux Architectes/Entreprises.");
-            } else {
-                setError(err.response?.data?.message || "Erreur lors de la publication.");
-            }
+        } else {
+            setError(result.error);
             setLoading(false);
         }
     };

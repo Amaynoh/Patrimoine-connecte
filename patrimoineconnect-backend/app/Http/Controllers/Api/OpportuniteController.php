@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 use App\Models\Opportunite;
 use App\Http\Requests\Opportunite\StoreOpportuniteRequest;
 use App\Http\Requests\Opportunite\UpdateOpportuniteRequest;
-
-// Import de notre Event personnalisé
 use App\Events\OpportuniteCreee;
 
 class OpportuniteController extends Controller
@@ -28,8 +26,10 @@ class OpportuniteController extends Controller
 
         return response()->json($opportunites);
     }
+
     public function store(StoreOpportuniteRequest $request)
     {
+        $this->authorize('create', Opportunite::class);
 
         $opportunite = $request->user()->opportunites()->create([
             'title' => $request->title,
@@ -50,14 +50,17 @@ class OpportuniteController extends Controller
             'message' => 'Opportunité créée avec succès'
         ], 201);
     }
+
     public function show($id)
     {
         $opportunite = Opportunite::with('user:id,name,role,city,phone')->findOrFail($id);
 
         return response()->json($opportunite);
     }
+
     public function update(UpdateOpportuniteRequest $request, Opportunite $opportunite)
     {
+        $this->authorize('update', $opportunite);
 
         $opportunite->update($request->only(['title', 'description', 'type', 'contract_type', 'location', 'missions', 'competences', 'budget', 'deadline']));
 
@@ -71,11 +74,7 @@ class OpportuniteController extends Controller
 
     public function destroy(Opportunite $opportunite)
     {
-        if ($opportunite->user_id !== request()->user()->id) {
-            return response()->json([
-                'message' => 'Vous n\'êtes pas autorisé à supprimer cette opportunité'
-            ], 403);
-        }
+        $this->authorize('delete', $opportunite);
 
         $opportunite->delete();
 
@@ -83,6 +82,7 @@ class OpportuniteController extends Controller
             'message' => 'Opportunité supprimée avec succès'
         ]);
     }
+
     public function myOpportunities(Request $request)
     {
         $opportunites = $request->user()
@@ -94,4 +94,3 @@ class OpportuniteController extends Controller
         return response()->json($opportunites);
     }
 }
-

@@ -3,17 +3,17 @@
 namespace App\Listeners;
 
 use App\Events\OpportuniteCreee;
-use App\Jobs\LogNouvelleOpportunite;
+use App\Mail\NouvelleOpportuniteMail;
+use Illuminate\Support\Facades\Mail;
 
 class EnvoyerNotificationAdmin
 {
-    /**
-     * Méthode appelée automatiquement quand l'événement est déclenché.
-     * 
-     * @param OpportuniteCreee $event L'événement reçu avec l'opportunité
-     */
+
     public function handle(OpportuniteCreee $event): void
     {
-        LogNouvelleOpportunite::dispatch($event->opportunite);
+        $adminEmail = 'amina.habab@gmail.com';
+        
+        Mail::to($adminEmail)->send(new NouvelleOpportuniteMail($event->opportunite));
     }
 }
+

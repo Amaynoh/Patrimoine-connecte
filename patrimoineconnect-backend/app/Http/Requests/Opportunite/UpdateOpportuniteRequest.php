@@ -3,16 +3,17 @@
 namespace App\Http\Requests\Opportunite;
 
 use Illuminate\Foundation\Http\FormRequest;
-
 class UpdateOpportuniteRequest extends FormRequest
 {
+  
     public function authorize(): bool
     {
+
         $opportunite = $this->route('opportunite');
-        
-        return $opportunite && $opportunite->user_id === $this->user()->id;
+        return $opportunite && $this->user()->can('update', $opportunite);
     }
 
+  
     public function rules(): array
     {
         return [
@@ -23,6 +24,7 @@ class UpdateOpportuniteRequest extends FormRequest
             'location' => 'sometimes|string|max:255',
         ];
     }
+
 
     public function messages(): array
     {

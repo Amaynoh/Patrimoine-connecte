@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import api from '../api/axios';
+import { useOpportunites } from '../context/OpportunitesContext';
 import WelcomeHeader from '../components/dashboard/WelcomeHeader';
 import StatsGrid from '../components/dashboard/StatsGrid';
 import ShortcutsGrid from '../components/dashboard/ShortcutsGrid';
@@ -13,11 +13,10 @@ import MesCandidatures from '../components/dashboard/MesCandidatures';
 const Dashboard = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
-    const [myOpportunites, setMyOpportunites] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const { myOpportunites, myLoading, fetchMyOpportunites, deleteOpportunite } = useOpportunites();
+
     const [deleting, setDeleting] = useState(null);
 
-    // Rediriger les admins vers leur panel
     if (user?.role === 'admin') {
         return <Navigate to="/admin" replace />;
     }
@@ -28,24 +27,18 @@ const Dashboard = () => {
     const stats = { annoncesPubliees: myOpportunites.length, profilsVisites: 247, messagesNonLus: 3, connexions: 8 };
 
     useEffect(() => {
-        const fetchMyOpportunites = async () => {
-            if (!canPublish) { setLoading(false); return; }
-            try {
-                const res = await api.get('/my-opportunities');
-                setMyOpportunites(res.data);
-            } catch { }
-            setLoading(false);
-        };
-        fetchMyOpportunites();
+        if (canPublish) {
+            fetchMyOpportunites();
+        }
     }, [canPublish]);
 
     const handleDelete = async (id) => {
         if (!window.confirm('Supprimer cette opportunité ?')) return;
         setDeleting(id);
-        try {
-            await api.delete(`/opportunites/${id}`);
-            setMyOpportunites(prev => prev.filter(opp => opp.id !== id));
-        } catch { alert('Erreur'); }
+        const result = await deleteOpportunite(id);
+        if (!result.success) {
+            alert('Erreur');
+        }
         setDeleting(null);
     };
 
@@ -60,13 +53,11 @@ const Dashboard = () => {
                     <div className="lg:col-span-2 space-y-6">
                         <ShortcutsGrid />
                         {canPublish && <CandidaturesRecues />}
-
                         {isCandidat && <MesCandidatures />}
-
                         {canPublish && (
                             <MyOpportunitiesSection
                                 opportunites={myOpportunites}
-                                loading={loading}
+                                loading={myLoading}
                                 deleting={deleting}
                                 onEdit={(id) => navigate(`/opportunites/edit/${id}`)}
                                 onDelete={handleDelete}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useOpportunites } from '../context/OpportunitesContext';
 import OpportuniteHeader from '../components/opportunites/detail/OpportuniteHeader';
 import OpportuniteDescription from '../components/opportunites/detail/OpportuniteDescription';
 import OpportuniteSkills from '../components/opportunites/detail/OpportuniteSkills';
@@ -9,26 +9,22 @@ import OpportuniteSidebar from '../components/opportunites/detail/OpportuniteSid
 const OpportuniteDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { fetchOpportuniteById } = useOpportunites();
+
     const [opportunite, setOpportunite] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchOpportunite = async () => {
-            try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/opportunites/${id}`);
-                setOpportunite(response.data);
-                setLoading(false);
-            } catch (err) {
-                console.error("Erreur lors du chargement de l'opportunité", err);
-                setError("Impossible de charger les détails de l'opportunité.");
+        const loadOpportunite = async () => {
+            if (id) {
+                const result = await fetchOpportuniteById(id);
+                setOpportunite(result.data);
+                setError(result.error);
                 setLoading(false);
             }
         };
-
-        if (id) {
-            fetchOpportunite();
-        }
+        loadOpportunite();
     }, [id]);
 
     if (loading) return <div className="text-center py-20 text-gray-600">Chargement...</div>;
@@ -57,7 +53,6 @@ const OpportuniteDetail = () => {
                     <div className="w-full lg:w-1/3">
                         <OpportuniteSidebar user={opportunite.user} opportuniteId={opportunite.id} />
                     </div>
-
                 </div>
             </div>
         </div>

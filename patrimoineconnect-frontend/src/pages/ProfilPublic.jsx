@@ -1,25 +1,24 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useUsers } from '../context/UsersContext';
 
 const ProfilPublic = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { fetchUserById } = useUsers();
+
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const res = await axios.get(`http://127.0.0.1:8000/api/users/${id}`);
-                setUser(res.data);
-            } catch (err) {
-                setError(err.response?.status === 404 ? "Utilisateur non trouvé" : "Impossible de charger le profil");
-            }
+        const loadUser = async () => {
+            const result = await fetchUserById(id);
+            setUser(result.data);
+            setError(result.error);
             setLoading(false);
         };
-        fetchUser();
+        loadUser();
     }, [id]);
 
     const formatRole = (role) => ({ artisan: 'Artisan', architecte: 'Architecte', restaurateur: 'Restaurateur', entreprise: 'Entreprise', laureat: 'Lauréat' }[role] || role);

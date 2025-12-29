@@ -5,20 +5,23 @@ namespace App\Providers;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
+use App\Models\Opportunite;
+use App\Policies\OpportunitePolicy;
+
 class AuthServiceProvider extends ServiceProvider
 {
     /**
      * The policy mappings for the application.
+     * 
+     * Ici on dit à Laravel: "Pour le modèle Opportunite, utilise OpportunitePolicy"
      *
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        Opportunite::class => OpportunitePolicy::class,
     ];
 
-    /**
-     * Register any authentication / authorization services.
-     */
+   
     public function boot(): void
     {
         $this->registerPolicies();
@@ -27,6 +30,7 @@ class AuthServiceProvider extends ServiceProvider
             return config('app.frontend_url')."/password-reset/$token?email={$notifiable->getEmailForPasswordReset()}";
         });
 
-        //
+        
     }
 }
+

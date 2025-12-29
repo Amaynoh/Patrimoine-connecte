@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import api from '../api/axios';
+import { useOpportunites } from '../context/OpportunitesContext';
 import OpportuniteForm from '../components/opportunites/OpportuniteForm';
 
 const EditOpportunite = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { user } = useAuth();
+    const { fetchOpportuniteById, updateOpportunite } = useOpportunites();
 
     const [formData, setFormData] = useState({
         title: '', type: 'emploi', contract_type: 'CDI', location: '', description: '', missions: '', competences: '', budget: '', deadline: ''
@@ -17,9 +18,10 @@ const EditOpportunite = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchOpportunite = async () => {
-            try {
-                const { data } = await api.get(`/opportunites/${id}`);
+        const loadOpportunite = async () => {
+            const result = await fetchOpportuniteById(id);
+            if (result.data) {
+                const data = result.data;
                 if (data.user_id !== user?.id) {
                     setError("Vous n'êtes pas autorisé à modifier cette opportunité.");
                     setLoading(false);
@@ -36,13 +38,12 @@ const EditOpportunite = () => {
                     budget: data.budget || '',
                     deadline: data.deadline || ''
                 });
-                setLoading(false);
-            } catch (err) {
-                setError("Erreur lors du chargement.");
-                setLoading(false);
+            } else {
+                setError(result.error);
             }
+            setLoading(false);
         };
-        fetchOpportunite();
+        loadOpportunite();
     }, [id, user?.id]);
 
     const handleSubmit = async (e) => {
@@ -50,18 +51,11 @@ const EditOpportunite = () => {
         setSubmitting(true);
         setError(null);
 
-        try {
-            const missionsArray = formData.missions ? formData.missions.split('\n').filter(i => i.trim()) : [];
-            const competencesArray = formData.competences ? formData.competences.split('\n').filter(i => i.trim()) : [];
-
-            await api.put(`/opportunites/${id}`, { ...formData, missions: missionsArray, competences: competencesArray });
+        const result = await updateOpportunite(id, formData);
+        if (result.success) {
             navigate('/dashboard');
-        } catch (err) {
-            if (err.response?.status === 422) {
-                setError(`Données invalides : ${Object.values(err.response.data.errors).flat().join(', ')}`);
-            } else {
-                setError(err.response?.data?.message || "Erreur lors de la modification.");
-            }
+        } else {
+            setError(result.error);
             setSubmitting(false);
         }
     };
