@@ -47,8 +47,8 @@ const AdminCategories = ({ categories, setCategories }) => {
                                 <>
                                     <span className="font-medium">{c.name}</span>
                                     <div className="flex gap-2">
-                                        <button onClick={() => setEdit({ id: c.id, name: c.name })} className="text-blue-600 text-sm">✏️ Modifier</button>
-                                        <button onClick={() => del(c.id, c.name)} className="text-red-600 text-sm">🗑️ Supprimer</button>
+                                        <button onClick={() => setEdit({ id: c.id, name: c.name })} className="text-blue-600 text-sm">✏️</button>
+                                        <button onClick={() => del(c.id, c.name)} className="text-red-600 text-sm">🗑️</button>
                                     </div>
                                 </>
                             )}

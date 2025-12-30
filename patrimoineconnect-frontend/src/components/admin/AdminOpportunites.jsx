@@ -20,7 +20,7 @@ const AdminOpportunites = ({ opportunites, setOpportunites }) => {
                             <td className="p-3"><Link to={`/opportunites/${o.id}`} className="text-[#C17A56] hover:underline font-medium">{o.title}</Link></td>
                             <td className="p-3 text-gray-600">{o.user?.name || '-'}</td>
                             <td className="p-3 text-gray-600">{o.location || '-'}</td>
-                            <td className="p-3 text-right"><button onClick={() => del(o.id, o.title)} className="text-red-600 text-sm">🗑️ Supprimer</button></td>
+                            <td className="p-3 text-right"><button onClick={() => del(o.id, o.title)} className="text-red-600 text-sm">🗑️</button></td>
                         </tr>
                     ))}
                 </tbody>

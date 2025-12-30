@@ -24,7 +24,7 @@ const AdminUsers = ({ users, setUsers }) => {
                             <td className="p-3 font-medium">{u.name}</td>
                             <td className="p-3 text-gray-600">{u.email}</td>
                             <td className="p-3"><span className={`px-2 py-1 rounded-full text-xs ${badge(u.role)}`}>{u.role}</span></td>
-                            <td className="p-3 text-right">{u.role !== 'admin' && <button onClick={() => del(u.id, u.name)} className="text-red-600 text-sm">🗑️ Supprimer</button>}</td>
+                            <td className="p-3 text-right">{u.role !== 'admin' && <button onClick={() => del(u.id, u.name)} className="text-red-600 text-sm">🗑️</button>}</td>
                         </tr>
                     ))}
                 </tbody>
