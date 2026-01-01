@@ -109,13 +109,17 @@ MySQL cloud
 
 Pipeline CI/CD GitHub Actions
 Liens utiles (Documentation du projet)
+
 Cahier des charges:
 
 https://docs.google.com/document/d/1Ne0r08iZT-vB64s1lAIfRrVrz8UhyM4qeFVrZLQUdVQ/edit?tab=t.0#heading=h.5a3il8rfjgvf
 
+Diagrammes UML (Miro):
+https://miro.com/app/board/uXjVGXIAZEk=/?share_link_id=77121043906
+
 Planification:
 https://trello.com/b/1ZBVpVq0/plateforme-patrimoineconnect
-https://lucid.app/lucidchart/292544bd-f177-4055-8772-1fed6c9b38a8/edit?beaconFlowId=8BECD9358EEC58D7&invitationId=inv_6dba3e69-6994-43d1-a1b2-c1a3eb8ea9b3&page=za4.sw4Yw7TE#
+
 [🔗 Figma UI/UX](https://www.figma.com/design/3o7qh82l77xJjeSWzLG8KE/Untitled?node-id=0-1&p=f&t=QXUqwin7YdxP1Kv8-0)
 Conclusion
 
