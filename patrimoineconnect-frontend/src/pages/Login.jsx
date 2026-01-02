@@ -83,9 +83,7 @@ const LoginPage = () => {
                         </div>
                     </div>
 
-                    <div className="flex justify-end">
-                        <Link to="/forgot-password" className="text-[10px] font-semibold text-gray-500 hover:text-[#8B5A2B]">Mot de passe oublié ?</Link>
-                    </div>
+
 
                     <button
                         type="submit"

@@ -31,10 +31,9 @@ Route::get('/opportunites/{id}', [OpportuniteController::class, 'show']);
 Route::get('/users', [UserController::class, 'index']);
 Route::get('/users/{id}', [UserController::class, 'show']);
 
-// Catégories publiques (pour les filtres)
+// Catégories publiques 
 Route::get('/categories', [CategoryController::class, 'index']);
 
-// Routes protégées (nécessitent authentification)
 Route::middleware(['auth:sanctum'])->group(function () {
     // Authentification
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -43,8 +42,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile', [ProfileController::class, 'update']);
     Route::post('/profile/photo', [ProfileController::class, 'uploadPhoto']);
-    
-    // Portfolio (fait partie du profil)
+
     Route::get('/profile/portfolio', [ProfileController::class, 'getPortfolio']);
     Route::post('/profile/portfolio', [ProfileController::class, 'addPortfolioImage']);
     Route::delete('/profile/portfolio/{id}', [ProfileController::class, 'deletePortfolioImage']);

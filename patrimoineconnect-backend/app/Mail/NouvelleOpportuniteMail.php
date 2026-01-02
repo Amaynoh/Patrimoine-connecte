@@ -7,9 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-/**
- * Email envoyé quand une nouvelle opportunité est créée.
- */
+
 class NouvelleOpportuniteMail extends Mailable
 {
     use Queueable, SerializesModels;

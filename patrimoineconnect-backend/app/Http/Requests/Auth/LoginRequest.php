@@ -6,18 +6,14 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class LoginRequest extends FormRequest
 {
-    /**
-     * Détermine si l'utilisateur est autorisé à faire cette requête.
-     */
+    
     public function authorize(): bool
     {
-        // Tout le monde peut se connecter
+    
         return true;
     }
 
-    /**
-     * Règles de validation pour la connexion.
-     */
+  
     public function rules(): array
     {
         return [
@@ -26,9 +22,6 @@ class LoginRequest extends FormRequest
         ];
     }
 
-    /**
-     * Messages d'erreur personnalisés.
-     */
     public function messages(): array
     {
         return [

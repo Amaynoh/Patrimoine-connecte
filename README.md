@@ -118,7 +118,7 @@ Diagrammes UML (Miro):
 https://miro.com/app/board/uXjVGXIAZEk=/?share_link_id=77121043906
 
 Planification:
-https://trello.com/b/1ZBVpVq0/plateforme-patrimoineconnect
+https://amina-habab.atlassian.net/jira/software/projects/PAT/boards/36/timeline?atlOrigin=eyJpIjoiMzVjMzBkNDBjZGVlNGVjOTljNTdjYzJkYWQzNjFjMTYiLCJwIjoiaiJ9
 
 [🔗 Figma UI/UX](https://www.figma.com/design/3o7qh82l77xJjeSWzLG8KE/Untitled?node-id=0-1&p=f&t=QXUqwin7YdxP1Kv8-0)
 Conclusion
